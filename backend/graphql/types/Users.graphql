@@ -1,0 +1,19 @@
+type User {
+  _id: ID!
+  email: String!
+  name: String!
+  password: String!
+}
+
+type MeRes {
+  error: GeneralError
+  user: User
+}
+
+type Query {
+  me(email: String!): MeRes!
+}
+
+type Mutation {
+  test: String
+}

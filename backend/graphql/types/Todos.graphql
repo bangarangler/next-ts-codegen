@@ -1,0 +1,33 @@
+type Todo {
+  id: ID!
+  user: Int!
+  name: String!
+}
+
+type TodoRes {
+  errors: InputError
+  todo: Todo
+}
+
+type TodosRes {
+  error: GeneralError
+  todos: [Todo]
+}
+
+input AddTodoInput {
+  title: String!
+  body: String!
+}
+
+# type Query {
+#   #   todo(todoId: String!): TodoResponse!
+#   todos: TodosRes!
+# }
+
+# type Mutation {
+#   addTodo(options: AddTodoInput!): TodoRes!
+# }
+
+# type Subscription {
+#   somethingChanged: String
+# }

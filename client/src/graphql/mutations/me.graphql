@@ -1,0 +1,12 @@
+query Me($email: String!) {
+  me(email: $email) {
+    user {
+      _id
+      name
+      email
+    }
+    error {
+      message
+    }
+  }
+}

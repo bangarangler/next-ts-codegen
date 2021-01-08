@@ -1,0 +1,10 @@
+# ROOT DIR
+node_modules
+
+# BACKEND
+backend/node_modules
+backend/.env
+
+# FRONTEND
+client/node_modules
+client/.env
