@@ -1,6 +1,11 @@
 import { useState } from "react";
-import Form from "../components/Form";
-import Register from "../components/Register";
+import dynamic from "next/dynamic";
+
+// COMPONENTS
+// Code Splitting / Only loaded when called on.  not a good usecase here but
+// wanted example
+const FormComponent = dynamic(() => import("../components/Form"));
+const RegisterComponent = dynamic(() => import("../components/Register"));
 
 const Home = () => {
   const [showForm, setShowForm] = useState("login");
@@ -9,13 +14,13 @@ const Home = () => {
       <p>Home Page</p>
       {showForm === "login" && (
         <>
-          <Form />
+          <FormComponent />
           <button onClick={() => setShowForm("register")}>Register Me!</button>
         </>
       )}
       {showForm === "register" && (
         <>
-          <Register />
+          <RegisterComponent />
           <button onClick={() => setShowForm("login")}>Go Login!</button>
         </>
       )}

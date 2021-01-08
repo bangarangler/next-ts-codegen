@@ -1,11 +1,12 @@
 type Todo {
-  id: ID!
-  user: Int!
+  _id: ID!
+  userId: String!
   name: String!
 }
 
 type TodoRes {
-  errors: InputError
+  errors: [InputError]
+  error: GeneralError
   todo: Todo
 }
 
@@ -15,18 +16,18 @@ type TodosRes {
 }
 
 input AddTodoInput {
-  title: String!
-  body: String!
+  name: String!
+  userId: String!
 }
 
-# type Query {
-#   #   todo(todoId: String!): TodoResponse!
-#   todos: TodosRes!
-# }
+type Query {
+  #   todo(todoId: String!): TodoResponse!
+  todos: TodosRes!
+}
 
-# type Mutation {
-#   addTodo(options: AddTodoInput!): TodoRes!
-# }
+type Mutation {
+  addTodo(options: AddTodoInput!): TodoRes!
+}
 
 # type Subscription {
 #   somethingChanged: String
