@@ -21,7 +21,7 @@ input AddTodoInput {
 }
 
 type Query {
-  #   todo(todoId: String!): TodoResponse!
+  todo(todoId: String!): TodoRes!
   todos: TodosRes!
 }
 

@@ -60,8 +60,14 @@ export type AddTodoInput = {
 
 export type Query = {
   __typename?: 'Query';
+  todo: TodoRes;
   todos: TodosRes;
   me: MeRes;
+};
+
+
+export type QueryTodoArgs = {
+  todoId: Scalars['String'];
 };
 
 
@@ -278,6 +284,7 @@ export type TodosResResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  todo?: Resolver<ResolversTypes['TodoRes'], ParentType, ContextType, RequireFields<QueryTodoArgs, 'todoId'>>;
   todos?: Resolver<ResolversTypes['TodosRes'], ParentType, ContextType>;
   me?: Resolver<ResolversTypes['MeRes'], ParentType, ContextType, RequireFields<QueryMeArgs, 'email'>>;
 };

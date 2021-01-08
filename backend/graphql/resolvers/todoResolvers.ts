@@ -1,4 +1,4 @@
-// import { ObjectID } from "mongodb";
+import { ObjectID } from "mongodb";
 import { ServerContext } from "../../ServerContext";
 import {
   MutationResolvers,
@@ -38,6 +38,29 @@ export const todoResolvers: Resolvers = {
         return { error: { message: "Internal Error" } };
       }
     },
+    todo: async (_, { todoId }, { db }: ServerContext): Promise<TodoRes> => {
+      const errors = [];
+      try {
+        if (!todoId || todoId === "")
+          errors.push({ source: "todoId", message: "bad todoId" });
+        if (errors.length > 0) {
+          return { errors };
+        }
+        const foundTodo = await db
+          .db("jwtCookie")
+          .collection("todos")
+          .findOne({ _id: new ObjectID(todoId) });
+
+        if (!foundTodo) {
+          return { error: { message: "No Todo found with that Id" } };
+        }
+        return { todo: foundTodo };
+        // return { todo: { _id: "dnmdmd", name: "mdmd", userId: "mdmd" } };
+      } catch (err) {
+        console.log("err from todo query catch");
+        return { error: { message: "Internal Error" } };
+      }
+    },
   },
   Mutation: {
     addTodo: async (
@@ -46,7 +69,6 @@ export const todoResolvers: Resolvers = {
       { db }: ServerContext
     ): Promise<TodoRes> => {
       const errors = [];
-      console.log("options", options);
       try {
         const { name, userId } = options;
         if (!name || name === "") {
@@ -59,12 +81,12 @@ export const todoResolvers: Resolvers = {
           name,
           userId,
         };
-        console.log("newTodo", newTodo);
+
         const newTodoRes = await db
           .db("jwtCookie")
           .collection("todos")
           .insertOne(newTodo);
-        console.log("newTodoRes", newTodoRes);
+
         if (errors.length > 0) {
           return { errors };
         }
