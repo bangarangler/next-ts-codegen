@@ -91,7 +91,6 @@ export type User = {
   _id: Scalars['ID'];
   email: Scalars['String'];
   name: Scalars['String'];
-  password: Scalars['String'];
 };
 
 export type MeRes = {
@@ -298,7 +297,6 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

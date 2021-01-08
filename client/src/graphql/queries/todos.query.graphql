@@ -1,0 +1,10 @@
+query Todos {
+  todos {
+    error {
+      message
+    }
+    todos {
+      ...TodoData
+    }
+  }
+}

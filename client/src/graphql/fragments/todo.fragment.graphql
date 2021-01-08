@@ -1,0 +1,5 @@
+fragment TodoData on Todo {
+  _id
+  userId
+  name
+}

@@ -1,0 +1,14 @@
+mutation AddTodo($options: AddTodoInput!) {
+  addTodo(options: $options) {
+    errors {
+      source
+      message
+    }
+    error {
+      message
+    }
+    todo {
+      ...TodoData
+    }
+  }
+}

@@ -1,0 +1,14 @@
+query Todo($todoId: String!) {
+  todo(todoId: $todoId) {
+    error {
+      message
+    }
+    errors {
+      source
+      message
+    }
+    todo {
+      ...TodoData
+    }
+  }
+}
