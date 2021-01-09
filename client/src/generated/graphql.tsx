@@ -1,27 +1,12 @@
+import { GraphQLClient } from 'graphql-request';
 import { useMutation, UseMutationOptions, useQuery, UseQueryOptions } from 'react-query';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 
-function fetcher<TData, TVariables>(endpoint: string, requestInit: RequestInit, query: string, variables?: TVariables) {
-  return async (): Promise<TData> => {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      ...requestInit,
-      body: JSON.stringify({ query, variables }),
-    });
-
-    const json = await res.json();
-
-    if (json.errors) {
-      const { message } = json.errors[0];
-
-      throw new Error(message);
-    }
-
-    return json.data;
-  }
+function fetcher<TData, TVariables>(client: GraphQLClient, query: string, variables?: TVariables) {
+  return async (): Promise<TData> => client.request<TData, TVariables>(query, variables);
 }
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -104,7 +89,6 @@ export type User = {
   _id: Scalars['ID'];
   email: Scalars['String'];
   name: Scalars['String'];
-  password: Scalars['String'];
 };
 
 export type MeRes = {
@@ -243,11 +227,11 @@ export const useAddTodoMutation = <
       TError = unknown,
       TContext = unknown
     >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit }, 
+      client: GraphQLClient, 
       options?: UseMutationOptions<AddTodoMutation, TError, AddTodoMutationVariables, TContext>
     ) => 
     useMutation<AddTodoMutation, TError, AddTodoMutationVariables, TContext>(
-      (variables?: AddTodoMutationVariables) => fetcher<AddTodoMutation, AddTodoMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, AddTodoDocument, variables)(),
+      (variables?: AddTodoMutationVariables) => fetcher<AddTodoMutation, AddTodoMutationVariables>(client, AddTodoDocument, variables)(),
       options
     );
 export const MeDocument = `
@@ -268,13 +252,13 @@ export const useMeQuery = <
       TData = MeQuery,
       TError = unknown
     >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit }, 
+      client: GraphQLClient, 
       variables: MeQueryVariables, 
       options?: UseQueryOptions<MeQuery, TError, TData>
     ) => 
     useQuery<MeQuery, TError, TData>(
       ['Me', variables],
-      fetcher<MeQuery, MeQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, MeDocument, variables),
+      fetcher<MeQuery, MeQueryVariables>(client, MeDocument, variables),
       options
     );
 export const TodoDocument = `
@@ -297,13 +281,13 @@ export const useTodoQuery = <
       TData = TodoQuery,
       TError = unknown
     >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit }, 
+      client: GraphQLClient, 
       variables: TodoQueryVariables, 
       options?: UseQueryOptions<TodoQuery, TError, TData>
     ) => 
     useQuery<TodoQuery, TError, TData>(
       ['Todo', variables],
-      fetcher<TodoQuery, TodoQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, TodoDocument, variables),
+      fetcher<TodoQuery, TodoQueryVariables>(client, TodoDocument, variables),
       options
     );
 export const TodosDocument = `
@@ -322,12 +306,12 @@ export const useTodosQuery = <
       TData = TodosQuery,
       TError = unknown
     >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit }, 
+      client: GraphQLClient, 
       variables?: TodosQueryVariables, 
       options?: UseQueryOptions<TodosQuery, TError, TData>
     ) => 
     useQuery<TodosQuery, TError, TData>(
       ['Todos', variables],
-      fetcher<TodosQuery, TodosQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, TodosDocument, variables),
+      fetcher<TodosQuery, TodosQueryVariables>(client, TodosDocument, variables),
       options
     );

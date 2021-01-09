@@ -8,4 +8,5 @@ generates:
       - "typescript-operations"
       - "typescript-react-query"
     config:
-      fetcher: fetch
+      # fetcher: fetch
+      fetcher: graphql-request

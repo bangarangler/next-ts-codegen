@@ -6,12 +6,12 @@ const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ContextProvider>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <ContextProvider>
         <Component {...pageProps} />
         <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </ContextProvider>
+      </ContextProvider>
+    </QueryClientProvider>
   );
 }
 

@@ -1,48 +1,53 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useUserContext } from "../context/allContexts";
 
 const Form = () => {
-  const router = useRouter();
+  const { mutate, data, status, setUserEmail, userEmail } = useUserContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
-  const submitForm = (event: any) => {
+  useEffect(() => {
+    switch (status) {
+      case "loading":
+        console.log("loading...");
+        break;
+      case "idle":
+        console.log("login isIdle");
+        break;
+      case "error":
+        console.log("error");
+        break;
+      case "success":
+        // on success set cookie and push to somewhere
+        if (data.status === 404) {
+          console.log("nope that didn't work");
+          return;
+        }
+        // const json = data.json();
+        setUserEmail(data.email);
+        document.cookie = "signedin=true";
+        router.push("/private-area");
+        break;
+      default:
+        break;
+    }
+  }, [status, data]);
+
+  const submitForm = async (event: any) => {
     event.preventDefault();
-
-    const options: any = {
-      method: "post",
-      headers: {
-        "Content-type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ email, password }),
-    };
-
-    fetch("http://localhost:4000/login", options)
-      .then((response) => {
-        if (!response.ok) {
-          if (response.status === 404) {
-            alert("Email not found, please retry");
-          }
-          if (response.status === 401) {
-            alert("Email and password do not match, please retry");
-          }
-        }
-        return response;
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          // document.cookie = "token=" + data.token;
-          document.cookie = "signedin=true";
-          router.push("/private-area");
-          // navigate('/private-area')
-        }
-      });
+    const loginInput = { email, password };
+    mutate(loginInput as any);
   };
 
   return (
     <div>
+      {data?.status === 404 && (
+        <>
+          <div>Error Could not find account</div>
+        </>
+      )}
       <form onSubmit={submitForm}>
         <p>
           Email:{" "}
@@ -59,7 +64,9 @@ const Form = () => {
           />
         </p>
         <p>
-          <button type="submit">Login</button>
+          <button type="submit" disabled={email === "" || password === ""}>
+            Login
+          </button>
         </p>
       </form>
     </div>
@@ -67,3 +74,34 @@ const Form = () => {
 };
 
 export default Form;
+
+// const options: any = {
+//   method: "post",
+//   headers: {
+//     "Content-type": "application/json",
+//   },
+//   credentials: "include",
+//   body: JSON.stringify({ email, password }),
+// };
+//
+// fetch("http://localhost:4000/login", options)
+//   .then((response) => {
+//     if (!response.ok) {
+//       if (response.status === 404) {
+//         alert("Email not found, please retry");
+//       }
+//       if (response.status === 401) {
+//         alert("Email and password do not match, please retry");
+//       }
+//     }
+//     return response;
+//   })
+//   .then((response) => response.json())
+//   .then((data) => {
+//     if (data.success) {
+//       // document.cookie = "token=" + data.token;
+//       document.cookie = "signedin=true";
+//       router.push("/private-area");
+//       // navigate('/private-area')
+//     }
+//   });

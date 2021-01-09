@@ -1,34 +1,53 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { isServer } from "../utils/isServer";
-import { useMeQuery, MeDocument } from "../generated/graphql";
-import { GQL_ENDPOINT } from "../../constants";
+import { useMeQuery } from "../generated/graphql";
+import { GQL_ENDPOINT, REST_BASE_ENDPOINT } from "../../constants";
+import { useUserContext } from "../context/allContexts";
+import { GraphQLClient } from "graphql-request";
 
-// const AuthenticatedComponent = dynamic(
-//   () => import("../components/Authenticated")
-// );
+const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
+  credentials: "include",
+});
 
 const PrivateArea = () => {
+  const { userEmail, setUserEmail } = useUserContext();
+  const { data: meData, status } = useMeQuery(
+    graphQLClient,
+    {
+      email: userEmail,
+    },
+    { enabled: !!userEmail }
+  );
+  console.log("status", status);
+  console.log("data from useMe", meData);
   const router = useRouter();
 
-  const dataSource = {
-    endpoint: GQL_ENDPOINT,
-    fetchParams: {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    },
-  };
+  useEffect(() => {
+    switch (status) {
+      case "loading":
+        console.log("meData loading...");
+        break;
+      case "idle":
+        console.log("meData isIdle");
+        break;
+      case "error":
+        console.log("meData error");
+        break;
+      case "success":
+        console.log("meData", meData);
+        if (meData.status === 404) {
+          console.log("nope that didn't work");
+          return;
+        }
+        break;
+      default:
+        break;
+    }
+  }, [status, meData]);
 
-  const vars = {
-    email: "jack@jack.com",
-  };
-  const { data, error, isFetching } = useMeQuery(dataSource, vars);
-  // const { data, error, isFetching } = useMeQuery({}, MeDocument, vars);
-
+  // convert this to use react-query
   const logout = async () => {
     const options: any = {
       method: "post",
@@ -39,13 +58,14 @@ const PrivateArea = () => {
       // body: JSON.stringify(),
     };
 
-    const out = await fetch("http://localhost:4000/logout", options);
+    const out = await fetch(`${REST_BASE_ENDPOINT}/auth/logout`, options);
     console.log("out", out);
     if (!out.ok) {
       return <div>Couldn't log out at this time</div>;
     }
     if (out.ok) {
       router.reload();
+      setUserEmail(null);
     }
   };
   // if (!Cookies.get("token")) {
@@ -55,24 +75,11 @@ const PrivateArea = () => {
     }
   }
 
-  if (isFetching) {
-    return <div>Fetching user data...</div>;
-  }
-
-  if (error) {
-    return <div>Error fetching user data</div>;
-  }
-
-  if (data) {
-    console.log("data for user", data);
-  }
-  const { name, email } = data.me.user;
-
   return (
     <>
       <div>Private Area!</div>
-      <div>UserName: {name}</div>
-      <div>Email: {email}</div>
+      <div>UserName: {meData?.me?.user?.name}</div>
+      <div>Email: {meData?.me?.user?.email}</div>
       <button onClick={() => logout()}>Logout</button>
     </>
   );
