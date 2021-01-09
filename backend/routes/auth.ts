@@ -1,8 +1,9 @@
 import Router, { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { __prod__, COOKIE_NAME } from "../constants";
+import { __prod__, REFRESH_COOKIE_NAME } from "../constants";
 import { db } from "../mongoConfig/mongo";
+import { createAccessToken, createRefreshToken } from "../utils/authTokens";
 
 const router = Router();
 
@@ -39,26 +40,28 @@ router.post("/login", async (req: Request, res: Response) => {
     return;
   }
 
-  const token = <JWTData | string>(
-    jwt.sign(
-      { email: userExists.email, id: userExists._id },
-      process.env.JWT_SECRET_KEY!
-    )
-  );
-  console.log("token", token);
+  // DATA TO SIGN INTO JWT ACCESS TOKEN & REFRESH TOKEN
+  const userObj = { email: userExists.email, id: userExists._id };
+
+  // CREATE ACCESS TOKEN
+  const accessToken = createAccessToken(userObj);
+
+  // CREATE REFRESH ACCESS TOKEN
+  const refreshToken = createRefreshToken(userObj);
 
   console.log("sending cookie");
-  res.cookie(COOKIE_NAME, token, {
+  // req.session.userId = refreshToken
+  res.cookie(REFRESH_COOKIE_NAME, refreshToken, {
     httpOnly: __prod__,
     // domain: "example.com",
   });
 
   res.status(200).json({
     data: {
+      accessToken,
       success: true,
       email,
     },
-    // token: token,
   });
 });
 
@@ -97,29 +100,32 @@ router.post("/register", async (req: Request, res: Response) => {
     .insertOne(newUser);
   console.log("newUserRes", newUserRes);
 
-  const token = <JWTData | string>(
-    jwt.sign(
-      { email: newUserRes.ops[0].email, id: newUserRes.ops[0]._id },
-      process.env.JWT_SECRET_KEY!
-    )
-  );
+  const userObj = { email: newUserRes.ops[0].email, id: newUserRes.ops[0]._id };
 
-  console.log("token from reg", token);
-  res.cookie(COOKIE_NAME, token, {
+  // CREATE ACCESS TOKEN
+  const accessToken = createAccessToken(userObj);
+
+  // CREATE REFRESH ACCESS TOKEN
+  const refreshToken = createRefreshToken(userObj);
+
+  console.log("accessToken from reg", accessToken);
+  // req.session.userId = refreshToken
+  res.cookie(REFRESH_COOKIE_NAME, refreshToken, {
     httpOnly: __prod__,
     // domain: "example.com",
   });
+
   res.status(200).json({
     data: {
+      accessToken,
       success: true,
       email,
     },
-    // token: token,
   });
 });
 
 router.post("/logout", (_, res) => {
-  res.clearCookie(COOKIE_NAME);
+  res.clearCookie(REFRESH_COOKIE_NAME);
   res.clearCookie("signedin");
   res.json({ success: true });
 });
