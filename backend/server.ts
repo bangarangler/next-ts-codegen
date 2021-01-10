@@ -15,6 +15,7 @@ import { db } from "./mongoConfig/mongo";
 
 // REST IMPORTS
 import { authRoutes } from "./routes/auth";
+import { authMiddleware } from "./middleware/auth.middleware";
 
 // old secret = secret! or Secret!
 
@@ -34,25 +35,30 @@ try {
 
   // REST ROUTES LOOK HERE FOR LOGIN, REGISTER, LOGOUT
   app.use("/auth", authRoutes);
+  app.use(authMiddleware);
 
   const context = async ({ req, res }: ServerContext) => {
-    // const token = <string>req?.headers?.authorization || "";
-    console.log("req?.cookies", req?.cookies);
-    const token = req?.cookies[COOKIE_NAME] || "";
-    console.log("token from context", token);
-    try {
-      const payload: JWTData | any = jwt.verify(
-        token,
-        process.env.JWT_SECRET_KEY!
-      );
-      console.log("payload", payload);
-      // return payload;
-      return { req, res, db, payload };
-    } catch (e) {
-      throw new AuthenticationError(
-        "Authentication token is invalid, please log in"
-      );
-    }
+    // check accessToken
+    // const authHeaders = req?.headers?.authorization || "";
+    // const token = authHeaders.split(" ")[1];
+    // console.log("authHeaders", authHeaders);
+    // // console.log("req?.cookies", req?.cookies);
+    // // const token = req?.cookies[COOKIE_NAME] || "";
+    // console.log("token from context", token);
+    // try {
+    //   const payload: JWTData | any = jwt.verify(
+    //     token,
+    //     process.env.JWT_SECRET_KEY!
+    //   );
+    //   console.log("payload", payload);
+    //   // return payload;
+    //   return { req, res, db, payload };
+    return { req, res, db };
+    // } catch (e) {
+    //   throw new AuthenticationError(
+    //     "Authentication token is invalid, please log in"
+    //   );
+    // }
   };
 
   const server = new ApolloServer({

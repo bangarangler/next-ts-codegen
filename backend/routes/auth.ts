@@ -1,9 +1,10 @@
 import Router, { Request, Response } from "express";
-// import jwt from "jsonwebtoken";
+import { verify } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { __prod__, REFRESH_COOKIE_NAME } from "../constants";
 import { db } from "../mongoConfig/mongo";
 import { createAccessToken, createRefreshToken } from "../utils/authTokens";
+import { ObjectID } from "mongodb";
 
 const router = Router();
 
@@ -128,6 +129,53 @@ router.post("/logout", (_, res) => {
   res.clearCookie(REFRESH_COOKIE_NAME);
   res.clearCookie("signedin");
   res.json({ success: true });
+});
+
+router.get("/refresh", async (req: Request, res: Response) => {
+  const refreshToken = req?.cookies[REFRESH_COOKIE_NAME];
+  console.log("refreshToken", refreshToken);
+  if (!refreshToken) {
+    res.status(401).json({ error: true, message: "Sorry, please login" });
+  }
+  interface RefTokForm {
+    email: string;
+    id: string;
+  }
+  try {
+    const refTok = <RefTokForm>(
+      verify(refreshToken, process.env.REFRESH_SECRET_KEY!)
+    );
+    // console.log("refTok", refTok);
+    const filter = { _id: new ObjectID(refTok.id) };
+    const user = await db.db("jwtCookie").collection("users").findOne(filter);
+    // console.log("user from refresh", user);
+
+    if (!user) {
+      res.status(401).json({ error: true, message: "Please Register" });
+    }
+    const userObj = { id: user._id, email: user.email };
+    console.log("userObj", userObj);
+    const newAccTok = createAccessToken(userObj);
+    // console.log("newAccTok", newAccTok);
+
+    const newRefTok = createRefreshToken(userObj);
+    // console.log("newRefTok", newRefTok);
+    res.clearCookie(REFRESH_COOKIE_NAME);
+    res.cookie(REFRESH_COOKIE_NAME, newRefTok, {
+      httpOnly: __prod__,
+      // domain: "example.com",
+    });
+
+    res.status(200).json({
+      data: {
+        accessToken: newAccTok,
+        success: true,
+        email: user.email,
+      },
+    });
+  } catch (err) {
+    res.status(401).json({ error: true, message: "Hey Please Log In" });
+  }
 });
 
 export { router as authRoutes };
