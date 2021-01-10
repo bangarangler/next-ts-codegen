@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useUserContext } from "../context/allContexts";
 
 const Form = () => {
-  const { mutate, data, status, setUserEmail, userEmail } = useUserContext();
+  const { mutate, data, status, setUserEmail, setToken } = useUserContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
@@ -27,6 +27,9 @@ const Form = () => {
         }
         // const json = data.json();
         setUserEmail(data.email);
+        setToken(data.accessToken);
+        // temp
+        localStorage.setItem("accessToken", data.accessToken);
         document.cookie = "signedin=true";
         router.push("/private-area");
         break;

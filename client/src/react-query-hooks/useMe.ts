@@ -1,5 +1,6 @@
 import { useMutation } from "react-query";
 import { GQL_ENDPOINT } from "../../constants";
+import { useUserContext } from "../context/allContexts";
 import { MeQuery, MeQueryVariables, useMeQuery } from "../generated/graphql";
 
 // interface MeInputArgs {
@@ -7,12 +8,15 @@ import { MeQuery, MeQueryVariables, useMeQuery } from "../generated/graphql";
 // }
 
 const getMeData = async ({ email }: MeQueryVariables) => {
+  const { token } = useUserContext();
+  console.log("token from getMeData", token);
   const dataSource = {
     endpoint: GQL_ENDPOINT,
     fetchParams: {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: token ? `Bearer ${token}` : "",
       },
       credentials: "include",
     },

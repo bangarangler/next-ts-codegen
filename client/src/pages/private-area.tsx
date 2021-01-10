@@ -12,13 +12,13 @@ const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
 });
 
 const PrivateArea = () => {
-  const { userEmail, setUserEmail } = useUserContext();
+  const { userEmail, setUserEmail, token } = useUserContext();
   const { data: meData, status } = useMeQuery(
     graphQLClient,
     {
       email: userEmail,
     },
-    { enabled: !!userEmail }
+    { enabled: !!token }
   );
   console.log("status", status);
   console.log("data from useMe", meData);
@@ -49,6 +49,7 @@ const PrivateArea = () => {
 
   // convert this to use react-query
   const logout = async () => {
+    localStorage.removeItem("accessToken");
     const options: any = {
       method: "post",
       headers: {
