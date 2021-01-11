@@ -1,7 +1,11 @@
 import Router, { Request, Response } from "express";
 import { verify } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { __prod__, REFRESH_COOKIE_NAME } from "../constants";
+import {
+  __prod__,
+  REFRESH_COOKIE_NAME,
+  ACCESS_TOKEN_EXPIRES,
+} from "../constants";
 import { db } from "../mongoConfig/mongo";
 import { createAccessToken, createRefreshToken } from "../utils/authTokens";
 import { ObjectID } from "mongodb";
@@ -60,6 +64,7 @@ router.post("/login", async (req: Request, res: Response) => {
   res.status(200).json({
     data: {
       accessToken,
+      accessTokenExp: ACCESS_TOKEN_EXPIRES,
       success: true,
       email,
     },
@@ -119,6 +124,7 @@ router.post("/register", async (req: Request, res: Response) => {
   res.status(200).json({
     data: {
       accessToken,
+      accessTokenExp: ACCESS_TOKEN_EXPIRES,
       success: true,
       email,
     },
@@ -154,7 +160,7 @@ router.get("/refresh", async (req: Request, res: Response) => {
       res.status(401).json({ error: true, message: "Please Register" });
     }
     const userObj = { id: user._id, email: user.email };
-    console.log("userObj", userObj);
+    // console.log("userObj", userObj);
     const newAccTok = createAccessToken(userObj);
     // console.log("newAccTok", newAccTok);
 
@@ -169,6 +175,7 @@ router.get("/refresh", async (req: Request, res: Response) => {
     res.status(200).json({
       data: {
         accessToken: newAccTok,
+        accessTokenExp: ACCESS_TOKEN_EXPIRES,
         success: true,
         email: user.email,
       },

@@ -7,18 +7,29 @@ import { GQL_ENDPOINT, REST_BASE_ENDPOINT } from "../../constants";
 import { useUserContext } from "../context/allContexts";
 import { GraphQLClient } from "graphql-request";
 
-const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
-  credentials: "include",
-});
+// const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
+//   headers: {
+//     "Content-Type": "application/json",
+//     "Authorization": token ? `Bearer ${token}` : ""
+//   },
+//   credentials: "include",
+// });
 
 const PrivateArea = () => {
   const { userEmail, setUserEmail, token } = useUserContext();
+  const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token ? `Bearer ${token}` : "",
+    },
+    credentials: "include",
+  });
   const { data: meData, status } = useMeQuery(
     graphQLClient,
     {
       email: userEmail,
     },
-    { enabled: !!token }
+    { enabled: !!token !== null }
   );
   console.log("status", status);
   console.log("data from useMe", meData);

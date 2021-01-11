@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useUserContext } from "../context/allContexts";
 
 const Form = () => {
+  let inMemToken = "";
+  let countDown = "";
   const { mutate, data, status, setUserEmail, setToken } = useUserContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,6 +39,19 @@ const Form = () => {
         break;
     }
   }, [status, data]);
+
+  // useEffect(() => {
+  //   console.log("data useEffect2", data);
+  //   if (data?.accessToken && data?.accessTokenExp) {
+  //     inMemToken = data.accessToken;
+  //     countDown = data.accessTokenExp;
+  //   }
+  // }, [data]);
+  //
+  // useEffect(() => {
+  //   const test = Number(countDown.replace("m", ""));
+  //   console.log("test", test);
+  // }, [countDown]);
 
   const submitForm = async (event: any) => {
     event.preventDefault();

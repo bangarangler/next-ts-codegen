@@ -1,6 +1,6 @@
 import { sign } from "jsonwebtoken";
 
-import { __prod__ } from "../constants";
+import { ACCESS_TOKEN_EXPIRES, __prod__ } from "../constants";
 
 export interface AccessTokenFrame {
   id: string;
@@ -17,7 +17,7 @@ export const createAccessToken = (userObj: AccessTokenFrame) => {
   // console.log("userObj", userObj);
 
   const accessToken = sign(userObj, process.env.JWT_SECRET_KEY!, {
-    expiresIn: "15m",
+    expiresIn: ACCESS_TOKEN_EXPIRES,
   });
   // console.log("accessToken", accessToken);
   if (accessToken) {
