@@ -3,8 +3,6 @@ import { useState, useEffect } from "react";
 import { useUserContext } from "../context/allContexts";
 
 const Form = () => {
-  let inMemToken = "";
-  let countDown = "";
   const { mutate, data, status, setUserEmail, setToken } = useUserContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -134,7 +134,7 @@ router.post("/register", async (req: Request, res: Response) => {
 router.post("/logout", (_, res) => {
   res.clearCookie(REFRESH_COOKIE_NAME);
   res.clearCookie("signedin");
-  res.json({ success: true });
+  res.status(200).json({ data: { success: true } });
 });
 
 router.get("/refresh", async (req: Request, res: Response) => {

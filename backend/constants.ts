@@ -17,3 +17,5 @@ export const COOKIE_NAME = "voldemort";
 export const REFRESH_COOKIE_NAME = "riddle";
 
 export const ACCESS_TOKEN_EXPIRES = "15m";
+// TESTING
+// export const ACCESS_TOKEN_EXPIRES = "5s";

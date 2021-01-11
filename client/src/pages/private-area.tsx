@@ -3,9 +3,10 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { isServer } from "../utils/isServer";
 import { useMeQuery } from "../generated/graphql";
-import { GQL_ENDPOINT, REST_BASE_ENDPOINT } from "../../constants";
+import { GQL_ENDPOINT } from "../../constants";
 import { useUserContext } from "../context/allContexts";
 import { GraphQLClient } from "graphql-request";
+import useLogout from "../react-query-hooks/useLogout";
 
 // const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
 //   headers: {
@@ -16,7 +17,7 @@ import { GraphQLClient } from "graphql-request";
 // });
 
 const PrivateArea = () => {
-  const { userEmail, setUserEmail, token } = useUserContext();
+  const { userEmail, token } = useUserContext();
   const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
     headers: {
       "Content-Type": "application/json",
@@ -27,13 +28,19 @@ const PrivateArea = () => {
   const { data: meData, status } = useMeQuery(
     graphQLClient,
     {
-      email: userEmail,
+      email: userEmail && userEmail,
     },
-    { enabled: !!token !== null }
+    // will not run until it has token and userEmail (both of which required)
+    { enabled: !!token && !!userEmail }
   );
-  console.log("status", status);
-  console.log("data from useMe", meData);
+  // console.log("status", status);
+  // console.log("data from useMe", meData);
   const router = useRouter();
+  const {
+    mutate: logoutMutate,
+    data: logoutData,
+    status: logoutStatus,
+  } = useLogout();
 
   useEffect(() => {
     switch (status) {
@@ -58,29 +65,24 @@ const PrivateArea = () => {
     }
   }, [status, meData]);
 
-  // convert this to use react-query
   const logout = async () => {
     localStorage.removeItem("accessToken");
-    const options: any = {
-      method: "post",
-      headers: {
-        "Content-type": "application/json",
-      },
-      credentials: "include",
-      // body: JSON.stringify(),
-    };
-
-    const out = await fetch(`${REST_BASE_ENDPOINT}/auth/logout`, options);
-    console.log("out", out);
-    if (!out.ok) {
-      return <div>Couldn't log out at this time</div>;
-    }
-    if (out.ok) {
-      router.reload();
-      setUserEmail(null);
-    }
+    logoutMutate();
   };
-  // if (!Cookies.get("token")) {
+
+  useEffect(() => {
+    switch (logoutStatus) {
+      case "error":
+        console.log("error logging out");
+        break;
+      case "success":
+        console.log("logoutData", logoutData);
+        if (logoutData.success) {
+          router.reload();
+        }
+    }
+  }, [logoutStatus, logoutData]);
+
   if (!Cookies.get("signedin")) {
     if (!isServer()) {
       router.push("/");

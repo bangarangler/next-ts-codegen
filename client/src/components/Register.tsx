@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import useRegister from "../react-query-hooks/useRegister";
+import { useUserContext } from "../context/allContexts";
 
 const Register = () => {
   const router = useRouter();
@@ -10,6 +11,7 @@ const Register = () => {
   const [name, setName] = useState("");
   // don't love this figure out better pattern but much closer
   const registerInput = { email, password, confirmPW, name };
+  const { setUserEmail, setToken } = useUserContext();
   const { mutate, data, status } = useRegister(registerInput);
 
   useEffect(() => {
@@ -32,6 +34,9 @@ const Register = () => {
           console.log("REGISTER: nope that didn't work");
           return;
         }
+        setUserEmail(data.email);
+        setToken(data.accessToken);
+        localStorage.setItem("accessToken", data.accessToken);
         document.cookie = "signedin=true";
         router.push("/private-area");
         break;

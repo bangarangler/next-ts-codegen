@@ -1,17 +1,24 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { useMutation } from "react-query";
 import { verify } from "jsonwebtoken";
 import { REST_BASE_ENDPOINT } from "../../../constants";
 import useGetRefreshToken from "../../react-query-hooks/useGetRefreshToken";
+import useLogout from "../../react-query-hooks/useLogout";
 
 export const UserContext = createContext();
 
 export function UserProvider(props) {
   const [userEmail, setUserEmail] = useState(null);
   const [token, setToken] = useState(null);
-  const [inMemToken, setInMemToken] = useState(null);
-  const [countDown, setCountDown] = useState(null);
-  // const { mutate, data, status } = useGetRefreshToken();
+  const router = useRouter();
+  // const [inMemToken, setInMemToken] = useState(null);
+  // const [countDown, setCountDown] = useState(null);
+  const {
+    mutate: refMutate,
+    data: refData,
+    status: refStatus,
+  } = useGetRefreshToken(token);
   const { mutate, data, status, reset } = useMutation(async (loginInput) => {
     console.log("loginInput from useMutation", loginInput);
     const data = await fetch(`${REST_BASE_ENDPOINT}/auth/login`, {
@@ -31,43 +38,50 @@ export function UserProvider(props) {
 
   useEffect(() => {
     if (!token) {
-      // if (typeof window !== "undefined") {
       const accessToken = localStorage?.getItem("accessToken");
-      // const accessToken = JSON.parse(localStorage?.getItem("accessToken"));
-      console.log("accessToken from useEffect", accessToken);
+      // console.log("accessToken from useEffect", accessToken);
+      if (!accessToken) {
+        router.push("/");
+        return;
+      }
       setToken(accessToken);
-      // }
     }
   }, [token]);
 
   useEffect(() => {
     console.log("useremail useEffect running");
     if (!userEmail && token) {
-      console.log("JWT_SECRET_KEY", process.env.JWT_SECRET_KEY);
-      // const data = verify(token, process.env.JWT_SECRET_KEY);
-      console.log("data from useEffect!!!", data);
+      try {
+        const data = verify(token, process.env.NEXT_PUBLIC_JWT_SECRET_KEY);
+        // console.log("data from useEffect!!!", data);
+        setUserEmail(data.email);
+      } catch (err) {
+        console.log("err from UserContext err", err);
+        if (err.name === "TokenExpiredError") {
+          // console.log("hit refresh here");
+          // console.log("token", token);
+          refMutate();
+        }
+      }
     }
   }, [userEmail, token]);
 
-  // useEffect(() => {
-  //   if (data?.accessToken && data?.accessTokenExp) {
-  //     console.log("refresh useEffect running");
-  //     setInMemToken(data.accessToken);
-  //     const timerNumber = Number(data.accessTokenExp.replace("m", ""));
-  //     // console.log("timerNumber", timerNumber);
-  //     const date = new Date();
-  //     // console.log("date", date);
-  //     const time = date.setMinutes(date.getMinutes() + timerNumber);
-  //     // console.log("time", time);
-  //     setCountDown(time);
-  //   }
-  // }, [data]);
-  //
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     console.log("countDown", countDown)
-  //   }, countDown)
-  // }, [])
+  useEffect(() => {
+    console.log("refData useEffect running...");
+    console.log("refStatus", refStatus);
+    switch (refStatus) {
+      case "error":
+        console.log("error from usercontext switch", error);
+        break;
+      case "success":
+        console.log("data refresh", refData);
+        setUserEmail(refData?.email);
+        setToken(refData?.accessToken);
+        // console.log("userEmail", userEmail);
+        // console.log("token", token);
+        break;
+    }
+  }, [refData, userEmail, token]);
 
   return (
     <UserContext.Provider
@@ -80,8 +94,8 @@ export function UserProvider(props) {
         setUserEmail,
         token,
         setToken,
-        inMemToken,
-        countDown,
+        // inMemToken,
+        // countDown,
       }}>
       {props.children}
     </UserContext.Provider>

@@ -1,11 +1,12 @@
 import { useMutation } from "react-query";
 import { REST_BASE_ENDPOINT } from "../../constants";
 
-const refreshToken = async () => {
+const refreshToken = async (token: string) => {
   const data = await fetch(`${REST_BASE_ENDPOINT}/auth/refresh`, {
-    method: "POST",
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
+      Authorization: token ? `Bearer ${token}` : "",
     },
     credentials: "include",
     // body: JSON.stringify()
@@ -19,6 +20,6 @@ const refreshToken = async () => {
   return json.data;
 };
 
-export default function useGetRefreshToken() {
-  return useMutation("refresh", () => refreshToken());
+export default function useGetRefreshToken(token: string) {
+  return useMutation("refresh", () => refreshToken(token));
 }
