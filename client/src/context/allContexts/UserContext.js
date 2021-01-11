@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { verify } from "jsonwebtoken";
 import { REST_BASE_ENDPOINT } from "../../../constants";
 import useGetRefreshToken from "../../react-query-hooks/useGetRefreshToken";
-import useLogout from "../../react-query-hooks/useLogout";
 
 export const UserContext = createContext();
 
 export function UserProvider(props) {
+  const qClient = useQueryClient();
   const [userEmail, setUserEmail] = useState(null);
   const [token, setToken] = useState(null);
   const router = useRouter();
@@ -61,6 +61,8 @@ export function UserProvider(props) {
           // console.log("hit refresh here");
           // console.log("token", token);
           refMutate();
+          // testing
+          qClient.invalidateQueries();
         }
       }
     }

@@ -3,10 +3,9 @@ import { ServerContext } from "../../ServerContext";
 import {
   MutationResolvers,
   QueryResolvers,
-  QueryMeArgs,
   TodosRes,
   TodoRes,
-  MutationAddTodoArgs,
+  // MutationAddTodoArgs,
   // SubscriptionResolvers,
 } from "../../codeGenBE";
 
@@ -15,8 +14,6 @@ interface Resolvers {
   Mutation: MutationResolvers;
   // Subscription: SubscriptionResolvers;
 }
-
-// const SOMETHING_CHANGED = "something_changed";
 
 export const todoResolvers: Resolvers = {
   Query: {

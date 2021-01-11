@@ -7,17 +7,14 @@ import { GQL_ENDPOINT } from "../../constants";
 import { useUserContext } from "../context/allContexts";
 import { GraphQLClient } from "graphql-request";
 import useLogout from "../react-query-hooks/useLogout";
-
-// const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
-//   headers: {
-//     "Content-Type": "application/json",
-//     "Authorization": token ? `Bearer ${token}` : ""
-//   },
-//   credentials: "include",
-// });
+// import Todos from "../components/Todos/Todos.tsx";
 
 const PrivateArea = () => {
+  // next-router
+  const router = useRouter();
+  // User Context
   const { userEmail, token } = useUserContext();
+  // Must be a way to extract this with react-query if not turn into custom hook
   const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
     headers: {
       "Content-Type": "application/json",
@@ -35,13 +32,15 @@ const PrivateArea = () => {
   );
   // console.log("status", status);
   // console.log("data from useMe", meData);
-  const router = useRouter();
+
+  // renamed so not to cause a conflict
   const {
     mutate: logoutMutate,
     data: logoutData,
     status: logoutStatus,
   } = useLogout();
 
+  // useEffect to deal with meData
   useEffect(() => {
     switch (status) {
       case "loading":
@@ -65,6 +64,7 @@ const PrivateArea = () => {
     }
   }, [status, meData]);
 
+  // logout function to run using custom react-query hook
   const logout = async () => {
     localStorage.removeItem("accessToken");
     logoutMutate();
@@ -83,6 +83,7 @@ const PrivateArea = () => {
     }
   }, [logoutStatus, logoutData]);
 
+  // this may not be needed anymore
   if (!Cookies.get("signedin")) {
     if (!isServer()) {
       router.push("/");
@@ -95,6 +96,7 @@ const PrivateArea = () => {
       <div>UserName: {meData?.me?.user?.name}</div>
       <div>Email: {meData?.me?.user?.email}</div>
       <button onClick={() => logout()}>Logout</button>
+      {/*<Todos />*/}
     </>
   );
 };

@@ -1,13 +1,38 @@
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-import { useUserContext } from "../context/allContexts";
+import { useEffect, useReducer } from "react";
+import { useUserContext } from "../../context/allContexts";
+// reducer types
+import { State, Actions } from "./LoginTypes";
 
-const Form = () => {
+const reducer = (state: State, action: Actions) => {
+  switch (action.type) {
+    case "input":
+      return {
+        ...state,
+        [action.field]: action.value,
+      };
+    default:
+      return {
+        ...state,
+      };
+  }
+};
+
+const initState: State = {
+  email: "",
+  password: "",
+};
+
+const Login = () => {
+  // context state / react-query mutation data
   const { mutate, data, status, setUserEmail, setToken } = useUserContext();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // local form state
+  const [state, dispatch] = useReducer(reducer, initState);
+  const { email, password } = state;
+  // next-router
   const router = useRouter();
 
+  // this useEffect manages when a user logs in
   useEffect(() => {
     switch (status) {
       case "loading":
@@ -25,7 +50,6 @@ const Form = () => {
           console.log("nope that didn't work");
           return;
         }
-        // const json = data.json();
         setUserEmail(data.email);
         setToken(data.accessToken);
         // temp
@@ -38,19 +62,7 @@ const Form = () => {
     }
   }, [status, data]);
 
-  // useEffect(() => {
-  //   console.log("data useEffect2", data);
-  //   if (data?.accessToken && data?.accessTokenExp) {
-  //     inMemToken = data.accessToken;
-  //     countDown = data.accessTokenExp;
-  //   }
-  // }, [data]);
-  //
-  // useEffect(() => {
-  //   const test = Number(countDown.replace("m", ""));
-  //   console.log("test", test);
-  // }, [countDown]);
-
+  // submit login which will run mutate and start up useEffect above logic
   const submitForm = async (event: any) => {
     event.preventDefault();
     const loginInput = { email, password };
@@ -64,19 +76,34 @@ const Form = () => {
           <div>Error Could not find account</div>
         </>
       )}
+      {status === "loading" && <div>Loading...</div>}
       <form onSubmit={submitForm}>
         <p>
           Email:{" "}
           <input
             type="text"
-            onChange={(event) => setEmail(event.target.value)}
+            placeholder="jane.smith@example.com"
+            value={email}
+            onChange={(event) =>
+              dispatch({
+                type: "input",
+                field: "email",
+                value: event.target.value,
+              })
+            }
           />
         </p>
         <p>
           Password:{" "}
           <input
             type="password"
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={(event) =>
+              dispatch({
+                type: "input",
+                field: "password",
+                value: event.target.value,
+              })
+            }
           />
         </p>
         <p>
@@ -89,7 +116,7 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default Login;
 
 // const options: any = {
 //   method: "post",
