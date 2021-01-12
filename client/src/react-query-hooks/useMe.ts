@@ -1,47 +1,45 @@
-import { useMutation } from "react-query";
+import { useQuery } from "react-query";
+import gql from "graphql-tag";
 import { GQL_ENDPOINT } from "../../constants";
-import { useUserContext } from "../context/allContexts";
-import { MeQuery, MeQueryVariables, useMeQuery } from "../generated/graphql";
+// import axios from "axios";
+import { useUserContext, useAxiosContext } from "../context/allContexts";
+// import { MeQuery, MeQueryVariables, useMeQuery } from "../generated/graphql";
 
 // interface MeInputArgs {
 //   email: string;
 // }
+const query = gql`
+  query Me($email: String!) {
+    me(email: $email) {
+      user {
+        _id
+        name
+        email
+      }
+      error {
+        message
+      }
+    }
+  }
+`;
 
-const getMeData = async ({ email }: MeQueryVariables) => {
-  const { token } = useUserContext();
-  console.log("token from getMeData", token);
-  const dataSource = {
-    endpoint: GQL_ENDPOINT,
-    fetchParams: {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-      credentials: "include",
+const getMeData = async (query: any, variables: any) => {
+  console.log("getMeData fun running");
+  const axios = useAxiosContext();
+  const data = await axios.post(GQL_ENDPOINT, {
+    query,
+    variables: {
+      variables,
     },
-  };
-
-  const vars = {
-    email,
-  };
-
-  const { data, error, isFetching } = useMeQuery(dataSource, vars);
-  // const data = await fetch(`${GQL_ENDPOINT}`, {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   credentials: "include",
-  //   // body: JSON.stringify(meInput),
-  //   body: JSON.stringify({MeQuery, variables}),
-  // });
-
-  //   const json = await data.json();
-  //
-  //   return json.data;
+  });
+  console.log("data from getMeData", data);
+  // const json = await data.json();
+  // console.log("json from getMeData", json);
+  // console.log("json.data from getMeData", json.data);
+  // return json.data;
+  return data;
 };
 
-export default function useMeData(variables: MeQueryVariables) {
-  return useMutation("Me", () => getMeData(variables));
+export default function useMeData(variables: any) {
+  return useQuery("Me", () => getMeData(query, variables));
 }

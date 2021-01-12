@@ -2,42 +2,103 @@ import React, { useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { isServer } from "../utils/isServer";
-import { useMeQuery } from "../generated/graphql";
+// import { useMeQuery } from "../generated/graphql";
 import { GQL_ENDPOINT } from "../../constants";
+import { useQuery } from "react-query";
+import gql from "graphql-tag";
 // import { useUserContext } from "../context/allContexts";
 import { useAxiosContext } from "../context/allContexts";
-import { GraphQLClient } from "graphql-request";
+// import { GraphQLClient } from "graphql-request";
 import useLogout from "../react-query-hooks/useLogout";
+// import useMeData from "../react-query-hooks/useMe";
 // import Todos from "../components/Todos/Todos.tsx";
 
 const PrivateArea = () => {
   // next-router
   const router = useRouter();
+  const { axios } = useAxiosContext();
   // User Context
   // const { userEmail, token } = useUserContext();
   const { user, token } = useAxiosContext();
-  // Must be a way to extract this with react-query if not turn into custom hook
-  const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token ? `Bearer ${token}` : "",
+  // query Me($email: String!) {
+  // const query = gql`
+  //     query {
+  //     me(email: ${user?.email}) {
+  //       user {
+  //         _id
+  //         name
+  //         email
+  //       }
+  //       error {
+  //         message
+  //       }
+  //     }
+  //   }
+  // `;
+
+  // const getMeData = async (query: any, variables: any) => {
+  const getMeData = async () => {
+    console.log("getMeData fun running");
+    const data = await axios.post(GQL_ENDPOINT, {
+      query: `
+      query {
+      me(email: $email) {
+        user {
+          _id
+          name
+          email
+        }
+        error {
+          message
+        }
+      }
     },
-    credentials: "include",
-  });
-  const { data: meData, status } = useMeQuery(
-    graphQLClient,
-    {
-      email: user?.email,
-    },
-    // will not run until it has token and userEmail (both of which required)
-    { enabled: !!token && !!user.email }
+      `,
+      variables: { email: user?.email },
+    });
+    // const data = await axios.post(GQL_ENDPOINT, {
+    //   query,
+    //   variables,
+    // });
+    console.log("data from getMeData", data);
+    // const json = await data.json();
+    // console.log("json from getMeData", json);
+    // console.log("json.data from getMeData", json.data);
+    // return json.data;
+    return data;
+  };
+  const { data: meData, status } = useQuery(
+    "Me",
+    () =>
+      // getMeData(query, { email: user?.email })
+      getMeData(),
+    { enabled: !!user?.email }
   );
+  // const { data: meData, status } = useMeData({ email: user?.email });
+  // Must be a way to extract this with react-query if not turn into custom hook
+  // const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     Authorization: token ? `Bearer ${token}` : "",
+  //   },
+  //   credentials: "include",
+  // });
+  // const { data: meData, status } = useMeQuery(
+  //   graphQLClient,
+  //   {
+  //     email: user?.email,
+  //   },
+  //   // will not run until it has token and userEmail (both of which required)
+  //   { enabled: !!token && !!user.email }
+  // );
   // console.log("status", status);
   // console.log("data from useMe", meData);
 
   useEffect(() => {
     console.log("user from private", user);
-  }, [user, token]);
+    console.log("meData from private", meData);
+    console.log("status from private", status);
+  }, [user, token, status, meData]);
   // renamed so not to cause a conflict
   const {
     mutate: logoutMutate,
