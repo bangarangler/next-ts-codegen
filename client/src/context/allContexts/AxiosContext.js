@@ -6,10 +6,12 @@ import React, {
   useState,
 } from "react";
 import Axios from "axios";
-import useGetRefreshToken from "../../react-query-hooks/useGetRefreshToken";
+// import useGetRefreshToken from "../../react-query-hooks/useGetRefreshToken";
 import { useQueryClient } from "react-query";
 import { verify, decode } from "jsonwebtoken";
 import { useRouter } from "next/router";
+import { useMutation } from "react-query";
+import { REST_BASE_ENDPOINT } from "../../../constants";
 // import { useUserContext } from '../allContexts'
 
 export const AxiosContext = createContext();
@@ -20,12 +22,30 @@ export function AxiosProvider(props) {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
   const qClient = useQueryClient();
+
+  // refresh token fired on 401 to go get new tokens and replace current ones
+  const refreshToken = async () => {
+    const data = await axios.get(`${REST_BASE_ENDPOINT}/auth/refresh`);
+
+    console.log("data from refreshToken", data);
+    if (data) {
+      return data.data.data;
+    }
+  };
+
+  const useGetRefreshToken = () => {
+    return useMutation("refresh", () => refreshToken(token));
+  };
+
   const {
     mutate: refMutate,
     data: refData,
     status: refStatus,
     error: refError,
-  } = useGetRefreshToken(token);
+  } = useGetRefreshToken();
+  // end refresh token get
+
+  // axios config handling headers and 401
   const axios = useMemo(() => {
     const axios = Axios.create({
       headers: {
@@ -60,6 +80,7 @@ export function AxiosProvider(props) {
         // Do something with response error
         if (401 === error.response.status) {
           console.log("DO SOMETHING HERE");
+          // running refresh token router here from up above
           refMutate();
         }
         return Promise.reject(error);
@@ -69,6 +90,8 @@ export function AxiosProvider(props) {
     return axios;
   }, []);
 
+  // if there is not a token take us to home page
+  // if there is one set the user and token in state
   useEffect(() => {
     if (!token) {
       // if (!token) {
@@ -85,6 +108,10 @@ export function AxiosProvider(props) {
     }
   }, [token]);
 
+  // if no user but we have a token decode the token for the user and set user
+  // handles refresh
+  // if token is expired it will also run the refresh route from above to get
+  // more token
   useEffect(() => {
     // if (!userEmail && token) {
     if (!user && token) {
@@ -106,6 +133,10 @@ export function AxiosProvider(props) {
     // }, [userEmail, token]);
   }, [user, token]);
 
+  // final piece based on the response we get back from refresh route we either
+  // set new accessToken in localStorage and setUser and Token of console log
+  // error.
+  // could also log them out here if it fails
   useEffect(() => {
     console.log("refData useEffect running...");
     console.log("refStatus", refStatus);
@@ -115,7 +146,6 @@ export function AxiosProvider(props) {
         break;
       case "success":
         console.log("data refresh", refData);
-        // setUserEmail(refData?.email);
         localStorage.setItem("accessToken", refData?.accessToken);
         setUser(refData);
         setToken(refData?.accessToken);
@@ -126,8 +156,28 @@ export function AxiosProvider(props) {
     // }, [refData, userEmail, token]);
   }, [refData, user, token]);
 
+  // register route also moved in here as i need access to custom axios
+  const postRegister = async (registerInput) => {
+    const data = await axios.post(
+      `${REST_BASE_ENDPOINT}/auth/register`,
+      registerInput
+    );
+
+    if (data) {
+      console.log("data from postRegisteR", data);
+      return data.data.data;
+    }
+  };
+
+  const useRegister = (registerInput) => {
+    return useMutation(["register", registerInput], () =>
+      postRegister(registerInput)
+    );
+  };
+
   return (
-    <AxiosContext.Provider value={{ axios, user, setUser, token, setToken }}>
+    <AxiosContext.Provider
+      value={{ axios, user, setUser, token, setToken, useRegister }}>
       {props.children}
     </AxiosContext.Provider>
   );

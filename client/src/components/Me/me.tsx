@@ -36,8 +36,8 @@ const Me = () => {
       {status === "loading" && <div>Loading Me...</div>}
       {data && (
         <div>
-          <p>{data.me.user.name}</p>
-          <p>{data.me.user.email}</p>
+          <p>{data?.me?.user?.name}</p>
+          <p>{data?.me?.user?.email}</p>
         </div>
       )}
     </>

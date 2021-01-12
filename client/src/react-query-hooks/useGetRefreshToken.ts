@@ -1,6 +1,10 @@
 import { useMutation } from "react-query";
 import { REST_BASE_ENDPOINT } from "../../constants";
 
+// old no longer being used as it is inside AxiosProvider
+// i like it better here but i don't have axios to axiosConfig here which is why
+// it's in context
+
 const refreshToken = async (token: string) => {
   const data = await fetch(`${REST_BASE_ENDPOINT}/auth/refresh`, {
     method: "GET",
