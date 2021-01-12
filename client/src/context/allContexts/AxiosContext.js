@@ -10,14 +10,13 @@ import useGetRefreshToken from "../../react-query-hooks/useGetRefreshToken";
 import { useQueryClient } from "react-query";
 import { verify, decode } from "jsonwebtoken";
 import { useRouter } from "next/router";
-// import { useUserContext } from "../allContexts";
+// import { useUserContext } from '../allContexts'
 
 export const AxiosContext = createContext();
 
 export function AxiosProvider(props) {
-  // const { setToken, setUserEmail, userEmail, token } = useUserContext();
+  // const {useGetRefreshToken} = useUserContext()
   const router = useRouter();
-  // const [userEmail, setUserEmail] = useState(null);
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
   const qClient = useQueryClient();
@@ -25,6 +24,7 @@ export function AxiosProvider(props) {
     mutate: refMutate,
     data: refData,
     status: refStatus,
+    error: refError,
   } = useGetRefreshToken(token);
   const axios = useMemo(() => {
     const axios = Axios.create({
@@ -33,7 +33,7 @@ export function AxiosProvider(props) {
       },
       // credentials: "include",
       withCredentials: true,
-      // body: JSON.stringify({query, variables})
+      // body: JSON.stringify({ query, variables }),
     });
 
     axios.interceptors.request.use((config) => {
@@ -53,10 +53,10 @@ export function AxiosProvider(props) {
       (error) => {
         console.log("error from interceptors", error);
         // Any status codes that falls outside the range of 2xx cause this function to trigger
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
+        // const token = localStorage.getItem("accessToken");
+        // if (token) {
+        //   config.headers.Authorization = `Bearer ${token}`;
+        // }
         // Do something with response error
         if (401 === error.response.status) {
           console.log("DO SOMETHING HERE");
@@ -111,11 +111,12 @@ export function AxiosProvider(props) {
     console.log("refStatus", refStatus);
     switch (refStatus) {
       case "error":
-        console.log("error from usercontext switch", error);
+        console.log("error from usercontext switch", refError);
         break;
       case "success":
         console.log("data refresh", refData);
         // setUserEmail(refData?.email);
+        localStorage.setItem("accessToken", refData?.accessToken);
         setUser(refData);
         setToken(refData?.accessToken);
         console.log("user", user);
