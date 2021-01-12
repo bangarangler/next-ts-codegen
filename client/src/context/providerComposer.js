@@ -1,6 +1,6 @@
 import React from "react";
 
-import { UserProvider, ErrorProvider } from "./allContexts";
+import { AxiosProvider, UserProvider, ErrorProvider } from "./allContexts";
 
 function ProviderComposer({ contexts, children }) {
   return contexts.reduceRight(
@@ -14,7 +14,8 @@ function ProviderComposer({ contexts, children }) {
 
 function ContextProvider({ children }) {
   return (
-    <ProviderComposer contexts={[<ErrorProvider />, <UserProvider />]}>
+    <ProviderComposer
+      contexts={[<AxiosProvider />, <ErrorProvider />, <UserProvider />]}>
       {children}
     </ProviderComposer>
   );

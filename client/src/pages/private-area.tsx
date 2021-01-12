@@ -4,7 +4,8 @@ import { useRouter } from "next/router";
 import { isServer } from "../utils/isServer";
 import { useMeQuery } from "../generated/graphql";
 import { GQL_ENDPOINT } from "../../constants";
-import { useUserContext } from "../context/allContexts";
+// import { useUserContext } from "../context/allContexts";
+import { useAxiosContext } from "../context/allContexts";
 import { GraphQLClient } from "graphql-request";
 import useLogout from "../react-query-hooks/useLogout";
 // import Todos from "../components/Todos/Todos.tsx";
@@ -13,7 +14,8 @@ const PrivateArea = () => {
   // next-router
   const router = useRouter();
   // User Context
-  const { userEmail, token } = useUserContext();
+  // const { userEmail, token } = useUserContext();
+  const { user, token } = useAxiosContext();
   // Must be a way to extract this with react-query if not turn into custom hook
   const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
     headers: {
@@ -25,14 +27,17 @@ const PrivateArea = () => {
   const { data: meData, status } = useMeQuery(
     graphQLClient,
     {
-      email: userEmail && userEmail,
+      email: user?.email,
     },
     // will not run until it has token and userEmail (both of which required)
-    { enabled: !!token && !!userEmail }
+    { enabled: !!token && !!user.email }
   );
   // console.log("status", status);
   // console.log("data from useMe", meData);
 
+  useEffect(() => {
+    console.log("user from private", user);
+  }, [user, token]);
   // renamed so not to cause a conflict
   const {
     mutate: logoutMutate,

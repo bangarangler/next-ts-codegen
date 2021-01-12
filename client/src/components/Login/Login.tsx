@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useReducer } from "react";
-import { useUserContext } from "../../context/allContexts";
+import { useUserContext, useAxiosContext } from "../../context/allContexts";
+// import { useAxiosContext } from "../../context/allContexts";
 // reducer types
 import { State, Actions } from "./LoginTypes";
 
@@ -25,7 +26,11 @@ const initState: State = {
 
 const Login = () => {
   // context state / react-query mutation data
-  const { mutate, data, status, setUserEmail, setToken } = useUserContext();
+  // const { mutate, data, status, setUserEmail, setToken } = useUserContext();
+  // const { useLogin, setUserEmail, setToken } = useUserContext();
+  const { useLogin } = useUserContext();
+  const { setUser, setToken } = useAxiosContext();
+  const { mutate, data, status, error } = useLogin();
   // local form state
   const [state, dispatch] = useReducer(reducer, initState);
   const { email, password } = state;
@@ -42,15 +47,20 @@ const Login = () => {
         console.log("login isIdle");
         break;
       case "error":
-        console.log("error");
+        console.log("error from Login.tsx", error);
         break;
       case "success":
         // on success set cookie and push to somewhere
-        if (data.status === 404) {
-          console.log("nope that didn't work");
-          return;
-        }
-        setUserEmail(data.email);
+        console.log("data", data);
+        // if (data?.status === 404) {
+        //   console.log("nope that didn't work");
+        //   return;
+        // }
+        // console.log("data.email", data.email);
+        console.log("data.email", data.email);
+        console.log("data.accessToken", data.accessToken);
+        // setUserEmail(data.email);
+        setUser(data);
         setToken(data.accessToken);
         // temp
         localStorage.setItem("accessToken", data.accessToken);

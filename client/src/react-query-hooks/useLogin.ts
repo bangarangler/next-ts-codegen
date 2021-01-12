@@ -1,13 +1,29 @@
-import { fetchRestData } from "./fetchData";
+import { REST_BASE_ENDPOINT } from "../../constants";
+import { useMutation } from "react-query";
+import { useAxiosContext } from "../context/allContexts";
 
-export async function useLogin(key: any, bod: any) {
-  console.log("key from useLogin", key);
-  const data = await fetchRestData("", bod);
-  console.log("data from useLogin", data);
-  if (data) {
-    return data;
-  } else {
-    console.log("returning null from useLogin");
-    return null;
-  }
+interface LoginInput {
+  email: string;
+  password: string;
+}
+
+export function useLogin(loginInput: LoginInput) {
+  console.log("running useLogin");
+  const { axios } = useAxiosContext();
+
+  return useMutation(async (loginInput: LoginInput) => {
+    try {
+      const { data } = await axios.post(
+        `${REST_BASE_ENDPOINT}/auth/login`,
+        loginInput
+      );
+      console.log("data", data);
+      if (data.data) {
+        return data.data;
+      }
+    } catch (err) {
+      console.log("err from useLogin", err.response.data);
+      throw new Error(err.response.data.message);
+    }
+  });
 }

@@ -30,7 +30,9 @@ router.post("/login", async (req: Request, res: Response) => {
   if (!userExists) {
     res.status(404).json({
       success: false,
+      data: null,
       message: `Could not find account: ${email}`,
+      // error: `Could not find account: ${email}`,
     });
     return;
   }

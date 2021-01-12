@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, useEffect, useReducer } from "react";
 import useRegister from "../../react-query-hooks/useRegister";
-import { useUserContext } from "../../context/allContexts";
+import { useUserContext, useAxiosContext } from "../../context/allContexts";
 import { RegisterState, RegisterActions } from "./RegisterTypes";
 
 const regReducer = (state: RegisterState, action: RegisterActions) => {
@@ -38,7 +38,8 @@ const Register = () => {
   // don't love this figure out better pattern but much closer
   const registerInput = { email, password, confirmPW, name };
   // USER CONTEXT to set userEmail and Token
-  const { setUserEmail, setToken } = useUserContext();
+  // const { setUserEmail, setToken } = useUserContext();
+  const { setUser, setToken } = useUserContext();
   const { mutate, data, status } = useRegister(registerInput);
 
   // useEffect deals with useRegister hook / react-query data
@@ -63,7 +64,8 @@ const Register = () => {
           return;
         }
         // set email and token in context
-        setUserEmail(data.email);
+        // setUserEmail(data.email);
+        setUser(data);
         setToken(data.accessToken);
         // set token in localStorage for refresh logic
         localStorage.setItem("accessToken", data.accessToken);
