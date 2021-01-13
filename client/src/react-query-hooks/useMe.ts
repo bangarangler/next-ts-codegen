@@ -1,8 +1,7 @@
 import { useQuery } from "react-query";
-// import gql from "graphql-tag";
 import { GQL_ENDPOINT } from "../../constants";
-// import axios from "axios";
-import { useUserContext, useAxiosContext } from "../context/allContexts";
+import { axios } from "../utils/axiosConfig";
+// import {useAxiosContext } from "../context/allContexts";
 
 const query = `
 query Me($email: String!) {
@@ -21,8 +20,8 @@ query Me($email: String!) {
 
 const fetchMeData = async (query: any, variables: any) => {
   console.log("getMeData fun running");
-  const { axios, user } = useAxiosContext();
-  const userEmail = user?.email;
+  // const { user } = useAxiosContext();
+  // const userEmail = user?.email;
   const data = await axios.post(GQL_ENDPOINT, {
     query,
     variables,
@@ -42,6 +41,9 @@ const fetchMeData = async (query: any, variables: any) => {
     return data.data.data;
   }
 };
-export default function useMeData(variables: any) {
-  return useQuery("ME", () => fetchMeData(query, variables));
-}
+
+export const useMeData = (userEmail: any) => {
+  return useQuery("ME", () => fetchMeData(query, { email: userEmail }), {
+    enabled: !!userEmail,
+  });
+};

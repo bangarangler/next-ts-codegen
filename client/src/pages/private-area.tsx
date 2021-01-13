@@ -3,19 +3,11 @@ import Cookies from "js-cookie";
 import Me from "../components/Me/me";
 import { useRouter } from "next/router";
 import { isServer } from "../utils/isServer";
-// import { useMeQuery } from "../generated/graphql";
-// import { GQL_ENDPOINT } from "../../constants";
-import { useAxiosContext } from "../context/allContexts";
-// import { GraphQLClient } from "graphql-request";
 import useLogout from "../react-query-hooks/useLogout";
-// import Todos from "../components/Todos/Todos.tsx";
-// import useLogout from '../react-query-hooks/useLogout'
 
 const PrivateArea = () => {
   // next-router
   const router = useRouter();
-  // User Context
-  const { user, token } = useAxiosContext();
 
   const {
     mutate: logoutMutate,

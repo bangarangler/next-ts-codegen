@@ -139,11 +139,13 @@ router.post("/logout", (_, res) => {
   res.status(200).json({ data: { success: true } });
 });
 
+// these should all be 401's ran into infinite loop issue with
+// axios.interceptors on frontend. will come back and revisit this in a bit
 router.get("/refresh", async (req: Request, res: Response) => {
   const refreshToken = req?.cookies[REFRESH_COOKIE_NAME];
   console.log("refreshToken", refreshToken);
   if (!refreshToken) {
-    res.status(401).json({ error: true, message: "Sorry, please login" });
+    res.status(403).json({ error: true, message: "Sorry, please login" });
   }
   interface RefTokForm {
     email: string;
@@ -159,7 +161,7 @@ router.get("/refresh", async (req: Request, res: Response) => {
     // console.log("user from refresh", user);
 
     if (!user) {
-      res.status(401).json({ error: true, message: "Please Register" });
+      res.status(403).json({ error: true, message: "Please Register" });
     }
     const userObj = { id: user._id, email: user.email };
     // console.log("userObj", userObj);
@@ -183,7 +185,7 @@ router.get("/refresh", async (req: Request, res: Response) => {
       },
     });
   } catch (err) {
-    res.status(401).json({ error: true, message: "Hey Please Log In" });
+    res.status(403).json({ error: true, message: "Hey Please Log In" });
   }
 });
 

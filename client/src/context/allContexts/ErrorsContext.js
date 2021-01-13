@@ -1,28 +1,29 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { useMutation, useQueryClient } from "react-query";
+// import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext } from "react";
+// import { useRouter } from "next/router";
+// import { useMutation, useQueryClient } from "react-query";
 // import { verify } from "jsonwebtoken";
-import { REST_BASE_ENDPOINT, GQL_ENDPOINT } from "../../../constants";
-import useGetRefreshToken from "../../react-query-hooks/useGetRefreshToken";
+// import { REST_BASE_ENDPOINT, GQL_ENDPOINT } from "../../../constants";
+// import { useGetRefreshToken } from "../../react-query-hooks/useGetRefreshToken";
 
 export const ErrorContext = createContext();
 
 export function ErrorProvider(props) {
-  const [errorStatusCode, setErrorStatusCode] = useState();
-
-  const qClient = useQueryClient();
-  const [userEmail, setUserEmail] = useState(null);
-  const [token, setToken] = useState(null);
-  const router = useRouter();
-  const {
-    mutate: refMutate,
-    data: refData,
-    status: refStatus,
-  } = useGetRefreshToken(token);
-
-  const refreshFlow = () => {
-    console.log("errorStatusCode", errorStatusCode);
-  };
+  // const [errorStatusCode, setErrorStatusCode] = useState();
+  //
+  // const qClient = useQueryClient();
+  // const [userEmail, setUserEmail] = useState(null);
+  // const [token, setToken] = useState(null);
+  // const router = useRouter();
+  // const {
+  //   mutate: refMutate,
+  //   data: refData,
+  //   status: refStatus,
+  // } = useGetRefreshToken(token);
+  //
+  // const refreshFlow = () => {
+  //   console.log("errorStatusCode", errorStatusCode);
+  // };
 
   // useEffect(() => {
   //   if (!token) {
@@ -75,21 +76,23 @@ export function ErrorProvider(props) {
 
   return (
     <ErrorContext.Provider
-      value={{
-        // mutate,
-        // data,
-        // status,
-        // reset,
-        refreshFlow,
-        errorStatusCode,
-        setErrorStatusCode,
-        // userEmail,
-        // setUserEmail,
-        // token,
-        // setToken,
-        // inMemToken,
-        // countDown,
-      }}>
+      value={
+        {
+          // mutate,
+          // data,
+          // status,
+          // reset,
+          // refreshFlow,
+          // errorStatusCode,
+          // setErrorStatusCode,
+          // userEmail,
+          // setUserEmail,
+          // token,
+          // setToken,
+          // inMemToken,
+          // countDown,
+        }
+      }>
       {props.children}
     </ErrorContext.Provider>
   );

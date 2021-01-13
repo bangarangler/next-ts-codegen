@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
-import { useState, useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { useAxiosContext } from "../../context/allContexts";
+import { useRegister } from "../../react-query-hooks/useRegister";
 import { RegisterState, RegisterActions } from "./RegisterTypes";
 
 const regReducer = (state: RegisterState, action: RegisterActions) => {
@@ -27,13 +28,13 @@ const initState: RegisterState = {
 const Register = () => {
   // next-router
   const router = useRouter();
-  const { useRegister, setUser, setToken } = useAxiosContext();
+  const { setUser, setToken } = useAxiosContext();
   // local form state
   const [regState, regDispatch] = useReducer(regReducer, initState);
   const { email, password, confirmPW, name } = regState;
   // don't love this figure out better pattern but much closer
   const registerInput = { email, password, confirmPW, name };
-  // useRegister hook from AxiosContext
+  // useRegister hook
   const { mutate, data, status } = useRegister(registerInput);
 
   // useEffect deals with useRegister hook / react-query data

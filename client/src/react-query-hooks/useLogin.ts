@@ -1,6 +1,7 @@
 import { REST_BASE_ENDPOINT } from "../../constants";
 import { useMutation } from "react-query";
-import { useAxiosContext } from "../context/allContexts";
+import { axios } from "../utils/axiosConfig";
+// import { useAxiosContext } from "../context/allContexts";
 
 interface LoginInput {
   email: string;
@@ -9,7 +10,7 @@ interface LoginInput {
 
 export function useLogin(loginInput: LoginInput) {
   console.log("running useLogin");
-  const { axios } = useAxiosContext();
+  // const { axios } = useAxiosContext();
 
   return useMutation(async (loginInput: LoginInput) => {
     try {

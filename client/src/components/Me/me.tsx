@@ -1,14 +1,11 @@
 import { useEffect } from "react";
 import { useAxiosContext, useUserContext } from "../../context/allContexts";
+import { useMeData } from "../../react-query-hooks/useMe";
 
 const Me = () => {
-  // useMeData is all the logic to fetch me
-  const { useMeData } = useUserContext();
-  // current user data is here for now
   const { user } = useAxiosContext();
+  // user email to pass into me query
   const userEmail = user?.email;
-  // using useMeData -> axios, react-query, graphql -> had to be in contest to
-  // get access to axios -> hate that trying to figure out way around it
   const { data, status, error } = useMeData(userEmail);
 
   // don't have to be in use effect just wanted to see the values
