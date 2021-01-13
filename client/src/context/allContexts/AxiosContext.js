@@ -25,7 +25,15 @@ export function AxiosProvider(props) {
       setUser(data);
       setToken(accessToken);
     }
-  }, [token]);
+
+    if (token && !user) {
+      const accessToken = localStorage?.getItem("accessToken");
+      const data = decode(accessToken, process.env.NEXT_PUBLIC_JWT_SECRET_KEY);
+      console.log("data from axios useEffect", data);
+      setUser(data);
+      setToken(accessToken);
+    }
+  }, [token, user]);
 
   return (
     <AxiosContext.Provider value={{ user, setUser, token, setToken }}>

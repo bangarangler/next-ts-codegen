@@ -1,25 +1,34 @@
-import { useEffect } from "react";
-import { GraphQLClient } from "graphql-request";
-import { GQL_ENDPOINT } from "../../../constants";
-import { useTodosQuery, TodoDocument } from "../../generated/graphql";
-import { useUserContext, useErrorContext } from "../../context/allContexts";
+import { useEffect, useReducer } from "react";
+import { TodoDocument } from "../../generated/graphql";
+import { useTodos } from "../../react-query-hooks/useTodos";
 import Todo from "./Todo";
 import AddNewTodo from "./AddNewTodo";
+import EditTodo from "./EditTodo";
+import { TodosState, TodosActions } from "./TodosTypes";
+import styles from "./Todos.module.css";
+
+const todosReducer = (state: TodosState, action: TodosActions) => {
+  switch (action.type) {
+    case "todoToEdit":
+      return {
+        ...state,
+        todoToEdit: action.selectedTodo,
+      };
+    default:
+      return {
+        ...state,
+      };
+  }
+};
+
+const initState: TodosState = {
+  todoToEdit: {},
+};
 
 const Todos = () => {
-  const { token, userEmail } = useUserContext();
-  const { errorStatusCode, setErrorStatusCode } = useErrorContext();
-  const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-    credentials: "include",
-  });
-  // don't run it until a token is valid
-  const { data, status, error } = useTodosQuery(graphQLClient, {
-    enabled: !!token && !!userEmail,
-  });
+  const { data, status, error } = useTodos();
+  const [todosState, todosDispatch] = useReducer(todosReducer, initState);
+  const { todoToEdit } = todosState;
 
   useEffect(() => {
     switch (status) {
@@ -44,14 +53,26 @@ const Todos = () => {
         break;
     }
   }, [status, data]);
+
+  const selectTodo = (todo: any) => {
+    console.log({ todo });
+    todosDispatch({ type: "todoToEdit", selectedTodo: todo });
+  };
+
   return (
-    <>
-      <div>List of Todos</div>
-      {data?.todos?.todos?.map((todo: TodoDocument) => {
-        return <Todo key={todo._id} todo={todo} />;
-      })}
-      <AddNewTodo />
-    </>
+    <div className={styles.todosContainer}>
+      <div className={styles.todosListWrapper}>
+        <div>List of Todos</div>
+        {data?.todos?.todos?.map((todo: TodoDocument) => {
+          return <Todo key={todo._id} todo={todo} selectTodo={selectTodo} />;
+        })}
+        <AddNewTodo />
+      </div>
+      <div className={styles.singleTodo}>
+        {todoToEdit && <Todo todo={todoToEdit} />}
+        <EditTodo todoToEdit={todoToEdit} />
+      </div>
+    </div>
   );
 };
 

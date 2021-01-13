@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import Cookies from "js-cookie";
+import Todos from "../components/Todos/Todos";
 import Me from "../components/Me/me";
 import { useRouter } from "next/router";
 import { isServer } from "../utils/isServer";
@@ -46,7 +47,7 @@ const PrivateArea = () => {
       <div>Private Area!</div>
       <button onClick={() => logout()}>Logout</button>
       <Me />
-      {/*<Todos />*/}
+      <Todos />
     </>
   );
 };

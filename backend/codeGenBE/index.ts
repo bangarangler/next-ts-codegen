@@ -58,6 +58,12 @@ export type AddTodoInput = {
   userId: Scalars['String'];
 };
 
+export type EditTodoInput = {
+  name: Scalars['String'];
+  userId: Scalars['String'];
+  todoId: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   todo: TodoRes;
@@ -78,12 +84,18 @@ export type QueryMeArgs = {
 export type Mutation = {
   __typename?: 'Mutation';
   addTodo: TodoRes;
+  editTodo: TodoRes;
   test?: Maybe<Scalars['String']>;
 };
 
 
 export type MutationAddTodoArgs = {
   options: AddTodoInput;
+};
+
+
+export type MutationEditTodoArgs = {
+  options: EditTodoInput;
 };
 
 export type User = {
@@ -190,6 +202,7 @@ export type ResolversTypes = {
   TodoRes: ResolverTypeWrapper<TodoRes>;
   TodosRes: ResolverTypeWrapper<TodosRes>;
   AddTodoInput: AddTodoInput;
+  EditTodoInput: EditTodoInput;
   Query: ResolverTypeWrapper<{}>;
   Mutation: ResolverTypeWrapper<{}>;
   User: ResolverTypeWrapper<User>;
@@ -208,6 +221,7 @@ export type ResolversParentTypes = {
   TodoRes: TodoRes;
   TodosRes: TodosRes;
   AddTodoInput: AddTodoInput;
+  EditTodoInput: EditTodoInput;
   Query: {};
   Mutation: {};
   User: User;
@@ -290,6 +304,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addTodo?: Resolver<ResolversTypes['TodoRes'], ParentType, ContextType, RequireFields<MutationAddTodoArgs, 'options'>>;
+  editTodo?: Resolver<ResolversTypes['TodoRes'], ParentType, ContextType, RequireFields<MutationEditTodoArgs, 'options'>>;
   test?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 };
 

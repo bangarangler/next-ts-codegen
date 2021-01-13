@@ -1,0 +1,13 @@
+.todosContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-areas: "todos singleTodo";
+}
+
+.todosListWrapper {
+  grid-area: todos;
+}
+
+.singleTodo {
+  grid-area: singleTodo;
+}

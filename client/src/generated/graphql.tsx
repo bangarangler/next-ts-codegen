@@ -56,6 +56,12 @@ export type AddTodoInput = {
   userId: Scalars['String'];
 };
 
+export type EditTodoInput = {
+  name: Scalars['String'];
+  userId: Scalars['String'];
+  todoId: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   todo: TodoRes;
@@ -76,12 +82,18 @@ export type QueryMeArgs = {
 export type Mutation = {
   __typename?: 'Mutation';
   addTodo: TodoRes;
+  editTodo: TodoRes;
   test?: Maybe<Scalars['String']>;
 };
 
 
 export type MutationAddTodoArgs = {
   options: AddTodoInput;
+};
+
+
+export type MutationEditTodoArgs = {
+  options: EditTodoInput;
 };
 
 export type User = {
@@ -121,6 +133,28 @@ export type AddTodoMutationVariables = Exact<{
 export type AddTodoMutation = (
   { __typename?: 'Mutation' }
   & { addTodo: (
+    { __typename?: 'TodoRes' }
+    & { errors?: Maybe<Array<Maybe<(
+      { __typename?: 'InputError' }
+      & Pick<InputError, 'source' | 'message'>
+    )>>>, error?: Maybe<(
+      { __typename?: 'GeneralError' }
+      & Pick<GeneralError, 'message'>
+    )>, todo?: Maybe<(
+      { __typename?: 'Todo' }
+      & TodoDataFragment
+    )> }
+  ) }
+);
+
+export type EditTodoMutationVariables = Exact<{
+  options: EditTodoInput;
+}>;
+
+
+export type EditTodoMutation = (
+  { __typename?: 'Mutation' }
+  & { editTodo: (
     { __typename?: 'TodoRes' }
     & { errors?: Maybe<Array<Maybe<(
       { __typename?: 'InputError' }
@@ -232,6 +266,33 @@ export const useAddTodoMutation = <
     ) => 
     useMutation<AddTodoMutation, TError, AddTodoMutationVariables, TContext>(
       (variables?: AddTodoMutationVariables) => fetcher<AddTodoMutation, AddTodoMutationVariables>(client, AddTodoDocument, variables)(),
+      options
+    );
+export const EditTodoDocument = `
+    mutation EditTodo($options: EditTodoInput!) {
+  editTodo(options: $options) {
+    errors {
+      source
+      message
+    }
+    error {
+      message
+    }
+    todo {
+      ...TodoData
+    }
+  }
+}
+    ${TodoDataFragmentDoc}`;
+export const useEditTodoMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient, 
+      options?: UseMutationOptions<EditTodoMutation, TError, EditTodoMutationVariables, TContext>
+    ) => 
+    useMutation<EditTodoMutation, TError, EditTodoMutationVariables, TContext>(
+      (variables?: EditTodoMutationVariables) => fetcher<EditTodoMutation, EditTodoMutationVariables>(client, EditTodoDocument, variables)(),
       options
     );
 export const MeDocument = `

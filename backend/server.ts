@@ -1,13 +1,12 @@
 import dotenv from "dotenv-safe";
 dotenv.config();
-import { ApolloServer, AuthenticationError } from "apollo-server-express";
+import { ApolloServer } from "apollo-server-express";
 import { createServer } from "http";
 import cors from "cors";
 import express from "express";
-import jwt from "jsonwebtoken";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import { __prod_cors__, __prod__, COOKIE_NAME } from "./constants";
+import { __prod_cors__, __prod__ } from "./constants";
 import { typeDefs } from "./graphql/typeDefs";
 import { resolvers } from "./graphql/resolvers";
 import { ServerContext } from "./ServerContext";
@@ -19,10 +18,10 @@ import { authMiddleware } from "./middleware/auth.middleware";
 
 // old secret = secret! or Secret!
 
-interface JWTData {
-  id: string;
-  email: string;
-}
+// interface JWTData {
+//   id: string;
+//   email: string;
+// }
 
 try {
   const app = express();

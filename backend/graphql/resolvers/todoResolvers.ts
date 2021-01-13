@@ -97,6 +97,54 @@ export const todoResolvers: Resolvers = {
         return { error: { message: "Internal Error" } };
       }
     },
+    editTodo: async (
+      _,
+      { options },
+      { db }: ServerContext
+    ): Promise<TodoRes> => {
+      try {
+        const errors = [];
+        const { name, userId, todoId } = options;
+        if (!name || name === "") {
+          errors.push({
+            source: "name",
+            message: "Edited Todo must have a name",
+          });
+        }
+        if (!userId || userId === "") {
+          errors.push({
+            source: "userId",
+            message: "Edited userId must be provided",
+          });
+        }
+
+        const editedTodo = {
+          name,
+          userId,
+        };
+        const filter = { _id: new ObjectID(todoId) };
+        const operation = {
+          $set: { name: editedTodo.name, userId: editedTodo.userId },
+        };
+
+        const editedTodoRes = await db
+          .db("jwtCookie")
+          .collection("todos")
+          .findOneAndUpdate(filter, operation, { returnOriginal: false });
+
+        if (errors.length > 0) {
+          return { errors };
+        }
+
+        if (!editedTodoRes) {
+          return { error: { message: "Couldn't find Todo." } };
+        }
+        return { todo: editedTodoRes.value };
+      } catch (err) {
+        console.log("err from editTodo", err);
+        return { error: { message: "Internal Error" } };
+      }
+    },
   },
   // Subscription: {
   //   somethingChanged: {

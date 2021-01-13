@@ -20,6 +20,12 @@ input AddTodoInput {
   userId: String!
 }
 
+input EditTodoInput {
+  name: String!
+  userId: String!
+  todoId: String!
+}
+
 type Query {
   todo(todoId: String!): TodoRes!
   todos: TodosRes!
@@ -27,6 +33,7 @@ type Query {
 
 type Mutation {
   addTodo(options: AddTodoInput!): TodoRes!
+  editTodo(options: EditTodoInput!): TodoRes!
 }
 
 # type Subscription {

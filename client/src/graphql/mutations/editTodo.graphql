@@ -1,0 +1,14 @@
+mutation EditTodo($options: EditTodoInput!) {
+  editTodo(options: $options) {
+    errors {
+      source
+      message
+    }
+    error {
+      message
+    }
+    todo {
+      ...TodoData
+    }
+  }
+}

@@ -1,10 +1,10 @@
 import { FC } from "react";
 import { TodoDocument } from "../../generated/graphql";
 
-const Todo: FC<TodoDocument> = ({ todo }) => {
+const Todo: FC<TodoDocument> = ({ todo, selectTodo }) => {
   return (
     <div key={todo._id}>
-      <p>{todo.name}</p>
+      <p onClick={() => selectTodo(todo)}>{todo.name}</p>
     </div>
   );
 };

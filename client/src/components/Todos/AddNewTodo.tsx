@@ -1,10 +1,8 @@
 import { useReducer, useEffect } from "react";
-import { useAddTodoMutation } from "../../generated/graphql";
-import { GraphQLClient } from "graphql-request";
 import { useQueryClient } from "react-query";
-import { GQL_ENDPOINT } from "../../../constants";
-import { useUserContext } from "../../context/allContexts";
-import { decode } from "jsonwebtoken";
+import { toErrorMap } from "../../utils/toErrorMap";
+import { useAxiosContext } from "../../context/allContexts";
+import { useAddNewTodo } from "../../react-query-hooks/useAddNewTodo";
 import { AddNewTodoState, AddNewTodoActions } from "./AddNewTodoTypes";
 
 const addNewTodoReducer = (
@@ -17,16 +15,17 @@ const addNewTodoReducer = (
         ...state,
         [action.field]: action.value,
       };
-    case "identifier":
+    case "uiError":
       return {
         ...state,
-        userId: action.payload,
+        uiError: action.payload,
       };
     case "reset":
       return {
         ...state,
         name: "",
-        // userId: "",
+        userId: "",
+        uiError: "",
       };
     default:
       return {
@@ -37,39 +36,29 @@ const addNewTodoReducer = (
 
 const initState: AddNewTodoState = {
   name: "",
-  userId: "",
+  uiError: "",
 };
 
 const AddNewTodo = () => {
+  // userData from context
+  const { user } = useAxiosContext();
   // used to invalidate cache after adding new todo
   const qClient = useQueryClient();
-  // needed for headers
-  const { token } = useUserContext();
-  // need global way to do this
-  const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-    credentials: "include",
-  });
   const [addNewTodoState, addNewTodoDispatch] = useReducer(
     addNewTodoReducer,
     initState
   );
   // local state
-  const { name, userId } = addNewTodoState;
+  const { name, uiError } = addNewTodoState;
   // variables for mutations
-  const vars = { options: { name, userId } };
+  const vars = { options: { name, userId: user?.id } };
   // react-query hook
-  const { mutate, status, data, error } = useAddTodoMutation(graphQLClient, {
-    variables: vars,
-  });
+  const { mutate, status, data, error } = useAddNewTodo(vars);
 
   const submitAddNewTodo = async (e: any) => {
     e.preventDefault();
-    // console.log("SubmitNewTodo running...");
-    await mutate();
+    addNewTodoDispatch({ type: "reset" });
+    mutate();
   };
 
   useEffect(() => {
@@ -82,26 +71,25 @@ const AddNewTodo = () => {
         break;
       case "success":
         console.log("AddNewTodo", data);
-        addNewTodoDispatch({ type: "reset" });
-        qClient.invalidateQueries("Todos");
+        console.log("here>...", data?.addTodo?.errors);
+        if (data?.addTodo?.errors) {
+          const errors = toErrorMap(data.addTodo.errors);
+          console.log("errors", errors);
+          addNewTodoDispatch({
+            type: "uiError",
+            payload: `${errors?.name}... ${errors?.userId}`,
+          });
+        } else if (data?.addTodo?.todo) {
+          addNewTodoDispatch({ type: "reset" });
+          qClient.invalidateQueries("Todos");
+        }
         break;
     }
   }, [status]);
 
-  // if they refresh makes sure we get the id out of token from localStorage
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    const user = decode(token, process.env.NEXT_PUBLIC_JWT_SECRET_KEY!);
-    // console.log("user", user);
-    addNewTodoDispatch({ type: "identifier", payload: user?.id });
-  }, []);
-
   return (
     <>
-      {status === "error" &&
-        data?.addTodo?.errors[0].message === "userId must be provided" && (
-          <div>FrontEnd Error</div>
-        )}
+      {uiError && <div>{uiError}</div>}
       <form onSubmit={(e) => submitAddNewTodo(e)}>
         <div>
           <label htmlFor="Name">Todo Name</label>

@@ -1,31 +1,38 @@
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { GQL_ENDPOINT } from "../../constants";
-import { GraphQLClient } from "graphql-request";
+import { axios } from "../utils/axiosConfig";
 
-// const graphQLClient = new GraphQLClient(GQL_ENDPOINT, {
-//   headers: {
-//     "Content-Type": "application/json",
-//     Authorization: token ? `Bearer ${token}` : "",
-//   },
-//   credentials: "include",
-// });
-const fetchTodos = async (token: string) => {
-  const data = await fetch(GQL_ENDPOINT, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-    credentials: "include",
+const query = `
+query Todos {
+  todos {
+    error {
+      message
+    }
+    todos {
+      _id
+      userId
+      name
+    }
+  }
+}
+`;
+
+const fetchTodos = async (query: any, variables: any) => {
+  const data = await axios.post(GQL_ENDPOINT, {
+    query,
+    variables,
+    body: JSON.stringify({ query, variables }),
   });
 
-  console.log("data from fetchTodos", data);
-  const json = await data.json();
-  console.log("json from fetchTodos", json);
+  if (!data) {
+    console.log("error from todos", data);
+  }
 
-  console.log("json data from fetchTodos", json.data);
-  return json.data;
+  if (data) {
+    return data.data.data;
+  }
 };
 
-export default function useTodos(token: string) {
-  return useQuery("Todos", () => fetchTodos(token));
-}
+export const useTodos = () => {
+  return useQuery("Todos", () => fetchTodos(query, {}));
+};
