@@ -1,0 +1,11 @@
+.todoContainer {
+  display: flex;
+  align-items: center;
+}
+
+.fakeIcon {
+  margin-left: 5px;
+  background: orangered;
+  border-radius: 5px;
+  padding: 2px;
+}

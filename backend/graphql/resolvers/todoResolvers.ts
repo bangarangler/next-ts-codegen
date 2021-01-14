@@ -1,4 +1,5 @@
 import { ObjectID } from "mongodb";
+import { decode } from "jsonwebtoken";
 import { ServerContext } from "../../ServerContext";
 import {
   MutationResolvers,
@@ -8,6 +9,7 @@ import {
   // MutationAddTodoArgs,
   // SubscriptionResolvers,
 } from "../../codeGenBE";
+import { REFRESH_COOKIE_NAME } from "../../constants";
 
 interface Resolvers {
   Query: QueryResolvers;
@@ -143,6 +145,43 @@ export const todoResolvers: Resolvers = {
       } catch (err) {
         console.log("err from editTodo", err);
         return { error: { message: "Internal Error" } };
+      }
+    },
+    // probably want to use custom errors instead of boolean but testing
+    // something with react-query
+    deleteTodo: async (
+      _,
+      { todoId },
+      { req, db }: ServerContext
+    ): Promise<boolean> => {
+      try {
+        const token = req?.headers?.authorization?.split(" ")[1] || "";
+        if (!token) {
+          return false;
+        } else if (token) {
+          try {
+            const { id }: any = decode(token);
+            const filter = {
+              $and: [{ _id: new ObjectID(todoId) }, { userId: id }],
+            };
+            const delTodoRes = await db
+              .db("jwtCookie")
+              .collection("todos")
+              .findOneAndDelete(filter);
+            if (!delTodoRes) {
+              return false;
+            }
+            // console.log({ delTodoRes });
+            return true;
+          } catch (err) {
+            console.log("err decoding user token", err);
+            return false;
+          }
+        }
+        return false;
+      } catch (err) {
+        console.log("err from deleteTodo", err);
+        return false;
       }
     },
   },

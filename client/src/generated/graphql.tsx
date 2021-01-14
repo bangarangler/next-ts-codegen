@@ -83,6 +83,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   addTodo: TodoRes;
   editTodo: TodoRes;
+  deleteTodo: Scalars['Boolean'];
   test?: Maybe<Scalars['String']>;
 };
 
@@ -94,6 +95,11 @@ export type MutationAddTodoArgs = {
 
 export type MutationEditTodoArgs = {
   options: EditTodoInput;
+};
+
+
+export type MutationDeleteTodoArgs = {
+  todoId: Scalars['String'];
 };
 
 export type User = {
@@ -145,6 +151,16 @@ export type AddTodoMutation = (
       & TodoDataFragment
     )> }
   ) }
+);
+
+export type DeleteTodoMutationVariables = Exact<{
+  todoId: Scalars['String'];
+}>;
+
+
+export type DeleteTodoMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteTodo'>
 );
 
 export type EditTodoMutationVariables = Exact<{
@@ -266,6 +282,22 @@ export const useAddTodoMutation = <
     ) => 
     useMutation<AddTodoMutation, TError, AddTodoMutationVariables, TContext>(
       (variables?: AddTodoMutationVariables) => fetcher<AddTodoMutation, AddTodoMutationVariables>(client, AddTodoDocument, variables)(),
+      options
+    );
+export const DeleteTodoDocument = `
+    mutation DeleteTodo($todoId: String!) {
+  deleteTodo(todoId: $todoId)
+}
+    `;
+export const useDeleteTodoMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient, 
+      options?: UseMutationOptions<DeleteTodoMutation, TError, DeleteTodoMutationVariables, TContext>
+    ) => 
+    useMutation<DeleteTodoMutation, TError, DeleteTodoMutationVariables, TContext>(
+      (variables?: DeleteTodoMutationVariables) => fetcher<DeleteTodoMutation, DeleteTodoMutationVariables>(client, DeleteTodoDocument, variables)(),
       options
     );
 export const EditTodoDocument = `

@@ -85,6 +85,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   addTodo: TodoRes;
   editTodo: TodoRes;
+  deleteTodo: Scalars['Boolean'];
   test?: Maybe<Scalars['String']>;
 };
 
@@ -96,6 +97,11 @@ export type MutationAddTodoArgs = {
 
 export type MutationEditTodoArgs = {
   options: EditTodoInput;
+};
+
+
+export type MutationDeleteTodoArgs = {
+  todoId: Scalars['String'];
 };
 
 export type User = {
@@ -205,10 +211,10 @@ export type ResolversTypes = {
   EditTodoInput: EditTodoInput;
   Query: ResolverTypeWrapper<{}>;
   Mutation: ResolverTypeWrapper<{}>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   User: ResolverTypeWrapper<User>;
   MeRes: ResolverTypeWrapper<MeRes>;
   AdditionalEntityFields: AdditionalEntityFields;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -224,10 +230,10 @@ export type ResolversParentTypes = {
   EditTodoInput: EditTodoInput;
   Query: {};
   Mutation: {};
+  Boolean: Scalars['Boolean'];
   User: User;
   MeRes: MeRes;
   AdditionalEntityFields: AdditionalEntityFields;
-  Boolean: Scalars['Boolean'];
 };
 
 export type UnionDirectiveArgs = {   discriminatorField?: Maybe<Scalars['String']>;
@@ -305,6 +311,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addTodo?: Resolver<ResolversTypes['TodoRes'], ParentType, ContextType, RequireFields<MutationAddTodoArgs, 'options'>>;
   editTodo?: Resolver<ResolversTypes['TodoRes'], ParentType, ContextType, RequireFields<MutationEditTodoArgs, 'options'>>;
+  deleteTodo?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteTodoArgs, 'todoId'>>;
   test?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 };
 

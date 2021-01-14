@@ -34,6 +34,7 @@ type Query {
 type Mutation {
   addTodo(options: AddTodoInput!): TodoRes!
   editTodo(options: EditTodoInput!): TodoRes!
+  deleteTodo(todoId: String!): Boolean!
 }
 
 # type Subscription {
