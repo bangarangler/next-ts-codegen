@@ -37,6 +37,6 @@ type Mutation {
   deleteTodo(todoId: String!): Boolean!
 }
 
-# type Subscription {
-#   somethingChanged: String
-# }
+type Subscription {
+  todoAdded: Todo!
+}

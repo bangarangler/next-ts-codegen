@@ -17,6 +17,10 @@ export interface JWTData {
   email: string;
 }
 
+// interface CustomReqFormat {
+//   req: Request & {session: {userId: string}};
+// }
+
 router.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   console.log({ email });
@@ -57,7 +61,9 @@ router.post("/login", async (req: Request, res: Response) => {
   const refreshToken = createRefreshToken(userObj);
 
   console.log("sending cookie");
-  // req.session.userId = refreshToken
+  // @ts-ignore
+  // req.session.userId = refreshToken;
+
   res.cookie(REFRESH_COOKIE_NAME, refreshToken, {
     httpOnly: __prod__,
     // domain: "example.com",

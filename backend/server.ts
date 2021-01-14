@@ -6,15 +6,16 @@ import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import { __prod_cors__, __prod__, REDIS_COOKIE_NAME } from "./constants";
+// import { __prod_cors__, __prod__, REDIS_COOKIE_NAME } from "./constants";
+import { __prod_cors__, __prod__ } from "./constants";
 import { typeDefs } from "./graphql/typeDefs";
 import { resolvers } from "./graphql/resolvers";
 import { ServerContext } from "./ServerContext";
 import { db } from "./mongoConfig/mongo";
 import Redis from "ioredis";
 import { RedisPubSub } from "graphql-redis-subscriptions";
-import session from "express-session";
-import connectRedis from "connect-redis";
+// import session from "express-session";
+// import connectRedis from "connect-redis";
 
 // REST IMPORTS
 import { authRoutes } from "./routes/auth";
@@ -43,36 +44,36 @@ try {
 
   const app = express();
   // REDIS
-  const RedisStore = connectRedis(session);
-  const redis = new Redis(process.env.REDIS_PORT);
-  if (!redis) throw new Error("Redis Not Connected!!!");
+  // const RedisStore = connectRedis(session);
+  // const redis = new Redis(process.env.REDIS_PORT);
+  // if (!redis) throw new Error("Redis Not Connected!!!");
   // app.set("trust proxy", 1) // needed if used with loadbalancer
-  const corsConfig = __prod_cors__;
-  app.use(cors(corsConfig));
+  // const corsConfig = __prod_cors__;
+  // app.use(cors(corsConfig));
 
-  app.use(
-    session({
-      name: REDIS_COOKIE_NAME,
-      store: new RedisStore({ client: redis, disableTouch: true }),
-      // cookie: {
-      //   maxAge: mili,
-      //   httpOnly: __prod__,
-      //   sameSite: "lax",
-      //   secure: __prod__,
-      //   domain: __prod__ ? "domain here" : undefined
-      // },
-      saveUninitialized: false,
-      secret: process.env.REDIS_SECRET!,
-      resave: false,
-    })
-  );
+  // app.use(
+  //   session({
+  //     name: REDIS_COOKIE_NAME,
+  //     store: new RedisStore({ client: redis, disableTouch: true }),
+  //     // cookie: {
+  //     //   maxAge: mili,
+  //     //   httpOnly: __prod__,
+  //     //   sameSite: "lax",
+  //     //   secure: __prod__,
+  //     //   domain: __prod__ ? "domain here" : undefined
+  //     // },
+  //     saveUninitialized: false,
+  //     secret: process.env.REDIS_SECRET!,
+  //     resave: false,
+  //   })
+  // );
 
   app.use(cookieParser());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
-  // const corsConfig = __prod_cors__;
-  // app.use(cors(corsConfig));
+  const corsConfig = __prod_cors__;
+  app.use(cors(corsConfig));
 
   // REST ROUTES LOOK HERE FOR LOGIN, REGISTER, LOGOUT
   app.use("/auth", authRoutes);
@@ -98,7 +99,8 @@ try {
     //   console.log("payload", payload);
     //   // return payload;
     //   return { req, res, db, payload };
-    return { req, res, db, redis, pubsub };
+    // return { req, res, db, redis, pubsub };
+    return { req, res, db, pubsub };
     // } catch (e) {
     //   throw new AuthenticationError(
     //     "Authentication token is invalid, please log in"

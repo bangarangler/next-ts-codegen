@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 export interface ServerContext {
+  // req?: Request & { session: { userId: string } };
   req?: Request;
   res?: Response;
   db?: any;

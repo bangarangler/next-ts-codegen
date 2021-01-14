@@ -4,18 +4,20 @@ import { ServerContext } from "../../ServerContext";
 import {
   MutationResolvers,
   QueryResolvers,
+  SubscriptionResolvers,
   TodosRes,
   TodoRes,
   // MutationAddTodoArgs,
-  // SubscriptionResolvers,
 } from "../../codeGenBE";
-import { REFRESH_COOKIE_NAME } from "../../constants";
+// import { REFRESH_COOKIE_NAME } from "../../constants";
 
 interface Resolvers {
   Query: QueryResolvers;
   Mutation: MutationResolvers;
-  // Subscription: SubscriptionResolvers;
+  Subscription: SubscriptionResolvers;
 }
+
+const TODO_ADDED = "TODO_ADDED";
 
 export const todoResolvers: Resolvers = {
   Query: {
@@ -65,7 +67,7 @@ export const todoResolvers: Resolvers = {
     addTodo: async (
       _,
       { options },
-      { db }: ServerContext
+      { db, pubsub }: ServerContext
     ): Promise<TodoRes> => {
       const errors = [];
       try {
@@ -92,6 +94,7 @@ export const todoResolvers: Resolvers = {
         if (!newTodoRes) {
           return { error: { message: "Error adding Todo to DB" } };
         }
+        pubsub.publish(TODO_ADDED, { todoAdded: newTodoRes.ops[0] });
         return { todo: newTodoRes.ops[0] };
         // return { todo: { _id: "mdmd", userId: "mdmdmd", name: "test" } };
       } catch (err) {
@@ -185,13 +188,13 @@ export const todoResolvers: Resolvers = {
       }
     },
   },
-  // Subscription: {
-  //   somethingChanged: {
-  //     subscribe: (_: any, __: any, { connection }: any) => {
-  //       console.log("connection from subscribe", connection);
-  //       console.log("connection.context", connection.context);
-  //       return connection.pubsub.asyncIterator(SOMETHING_CHANGED);
-  //     },
-  //   },
-  // },
+  Subscription: {
+    todoAdded: {
+      subscribe: (_: any, __: any, { connection }: any) => {
+        console.log("connection from subscribe", connection);
+        console.log("connection.context", connection.context);
+        return connection.pubsub.asyncIterator(TODO_ADDED);
+      },
+    },
+  },
 };
