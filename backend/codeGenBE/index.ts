@@ -64,6 +64,12 @@ export type EditTodoInput = {
   todoId: Scalars['String'];
 };
 
+export type TodoSubscriptionRes = {
+  __typename?: 'TodoSubscriptionRes';
+  todo?: Maybe<Todo>;
+  error?: Maybe<GeneralError>;
+};
+
 export type Query = {
   __typename?: 'Query';
   todo: TodoRes;
@@ -107,7 +113,13 @@ export type MutationDeleteTodoArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   todoAdded: Todo;
+  todoUpdated: TodoSubscriptionRes;
   somethingChanged?: Maybe<Scalars['String']>;
+};
+
+
+export type SubscriptionTodoUpdatedArgs = {
+  todoId: Scalars['String'];
 };
 
 export type User = {
@@ -215,6 +227,7 @@ export type ResolversTypes = {
   TodosRes: ResolverTypeWrapper<TodosRes>;
   AddTodoInput: AddTodoInput;
   EditTodoInput: EditTodoInput;
+  TodoSubscriptionRes: ResolverTypeWrapper<TodoSubscriptionRes>;
   Query: ResolverTypeWrapper<{}>;
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -235,6 +248,7 @@ export type ResolversParentTypes = {
   TodosRes: TodosRes;
   AddTodoInput: AddTodoInput;
   EditTodoInput: EditTodoInput;
+  TodoSubscriptionRes: TodoSubscriptionRes;
   Query: {};
   Mutation: {};
   Boolean: Scalars['Boolean'];
@@ -310,6 +324,12 @@ export type TodosResResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TodoSubscriptionResResolvers<ContextType = any, ParentType extends ResolversParentTypes['TodoSubscriptionRes'] = ResolversParentTypes['TodoSubscriptionRes']> = {
+  todo?: Resolver<Maybe<ResolversTypes['Todo']>, ParentType, ContextType>;
+  error?: Resolver<Maybe<ResolversTypes['GeneralError']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   todo?: Resolver<ResolversTypes['TodoRes'], ParentType, ContextType, RequireFields<QueryTodoArgs, 'todoId'>>;
   todos?: Resolver<ResolversTypes['TodosRes'], ParentType, ContextType>;
@@ -325,6 +345,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   todoAdded?: SubscriptionResolver<ResolversTypes['Todo'], "todoAdded", ParentType, ContextType>;
+  todoUpdated?: SubscriptionResolver<ResolversTypes['TodoSubscriptionRes'], "todoUpdated", ParentType, ContextType, RequireFields<SubscriptionTodoUpdatedArgs, 'todoId'>>;
   somethingChanged?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "somethingChanged", ParentType, ContextType>;
 };
 
@@ -347,6 +368,7 @@ export type Resolvers<ContextType = any> = {
   Todo?: TodoResolvers<ContextType>;
   TodoRes?: TodoResResolvers<ContextType>;
   TodosRes?: TodosResResolvers<ContextType>;
+  TodoSubscriptionRes?: TodoSubscriptionResResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;

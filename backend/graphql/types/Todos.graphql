@@ -26,6 +26,11 @@ input EditTodoInput {
   todoId: String!
 }
 
+type TodoSubscriptionRes {
+  todo: Todo
+  error: GeneralError
+}
+
 type Query {
   todo(todoId: String!): TodoRes!
   todos: TodosRes!
@@ -39,4 +44,5 @@ type Mutation {
 
 type Subscription {
   todoAdded: Todo!
+  todoUpdated(todoId: String!): TodoSubscriptionRes!
 }

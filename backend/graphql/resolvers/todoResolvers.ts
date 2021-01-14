@@ -1,6 +1,7 @@
 import { ObjectID } from "mongodb";
 import { decode } from "jsonwebtoken";
 import { ServerContext } from "../../ServerContext";
+import { withFilter } from "graphql-subscriptions";
 import {
   MutationResolvers,
   QueryResolvers,
@@ -18,6 +19,7 @@ interface Resolvers {
 }
 
 const TODO_ADDED = "TODO_ADDED";
+const TODO_UPDATED = "TODO_UPDATED";
 
 export const todoResolvers: Resolvers = {
   Query: {
@@ -105,7 +107,7 @@ export const todoResolvers: Resolvers = {
     editTodo: async (
       _,
       { options },
-      { db }: ServerContext
+      { db, pubsub }: ServerContext
     ): Promise<TodoRes> => {
       try {
         const errors = [];
@@ -142,8 +144,14 @@ export const todoResolvers: Resolvers = {
         }
 
         if (!editedTodoRes) {
+          pubsub.publish(TODO_UPDATED, {
+            todoUpdated: { error: { message: "Couldn't find Todo." } },
+          });
           return { error: { message: "Couldn't find Todo." } };
         }
+        pubsub.publish(TODO_UPDATED, {
+          todoUpdated: { todo: editedTodoRes.value },
+        });
         return { todo: editedTodoRes.value };
       } catch (err) {
         console.log("err from editTodo", err);
@@ -195,6 +203,22 @@ export const todoResolvers: Resolvers = {
         console.log("connection.context", connection.context);
         return connection.pubsub.asyncIterator(TODO_ADDED);
       },
+    },
+    todoUpdated: {
+      subscribe: withFilter(
+        (_: any, __: any, { connection }: ServerContext) => {
+          return connection.pubsub.asyncIterator(TODO_UPDATED);
+        },
+        (payload, variables) => {
+          if (
+            payload.todoUpdated.todo._id.toString() ===
+            variables.todoId.toString()
+          ) {
+            return true;
+          }
+          return false;
+        }
+      ),
     },
   },
 };
