@@ -14,6 +14,8 @@ export const __prod__ = process.env.NODE_ENV === "production" ? true : false;
 
 export const COOKIE_NAME = "voldemort";
 
+export const REDIS_COOKIE_NAME = "redis-riddle";
+
 export const REFRESH_COOKIE_NAME = "riddle";
 
 export const ACCESS_TOKEN_EXPIRES = "15m";

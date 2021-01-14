@@ -117,6 +117,11 @@ export type MeRes = {
   user?: Maybe<User>;
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  somethingChanged?: Maybe<Scalars['String']>;
+};
+
 export type AdditionalEntityFields = {
   path?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
@@ -214,6 +219,7 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   User: ResolverTypeWrapper<User>;
   MeRes: ResolverTypeWrapper<MeRes>;
+  Subscription: ResolverTypeWrapper<{}>;
   AdditionalEntityFields: AdditionalEntityFields;
 };
 
@@ -233,6 +239,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   User: User;
   MeRes: MeRes;
+  Subscription: {};
   AdditionalEntityFields: AdditionalEntityFields;
 };
 
@@ -328,6 +335,10 @@ export type MeResResolvers<ContextType = any, ParentType extends ResolversParent
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+  somethingChanged?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "somethingChanged", ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   GeneralError?: GeneralErrorResolvers<ContextType>;
   InputError?: InputErrorResolvers<ContextType>;
@@ -338,6 +349,7 @@ export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   MeRes?: MeResResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
 };
 
 
