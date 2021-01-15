@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { useAxiosContext, useUserContext } from "../../context/allContexts";
 import { useMeData } from "../../react-query-hooks/useMe";
+import styles from "./me.module.css";
 
 const Me = () => {
   const { user } = useAxiosContext();
+  const { fakeCount, fakeNotification } = useUserContext();
   // user email to pass into me query
   const userEmail = user?.email;
   const { data, status, error } = useMeData(userEmail);
@@ -29,6 +31,9 @@ const Me = () => {
   return (
     <>
       <div>ME COMPONENT LOCAL TESTING</div>
+      {fakeNotification && (
+        <div className={styles.fakeNotification}>{fakeCount && fakeCount}</div>
+      )}
       {error && <div>Error Getting Me</div>}
       {status === "loading" && <div>Loading Me...</div>}
       {data && (

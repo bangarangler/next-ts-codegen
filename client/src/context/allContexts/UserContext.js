@@ -1,83 +1,50 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 // import { useQuery } from "react-query";
-// import { GQL_ENDPOINT } from "../../../constants";
-import { useAxiosContext } from "../allContexts";
+import { SubscriptionClient } from "graphql-subscriptions-client";
+import { GQL_SUBSCRIPTION_ENDPOINT } from "../../../constants";
 
 export const UserContext = createContext();
 
 export function UserProvider(props) {
-  const { axios } = useAxiosContext();
+  const [fakeNotification, setFakeNotification] = useState(false);
+  const [fakeCount, setFakeCount] = useState(0);
+  useEffect(() => {
+    const query = `
+    subscription SomethingChanged {
+      somethingChanged
+    }
+    `;
 
-  // const query = `
-  // query Me($email: String!) {
-  //   me(email: $email) {
-  //     user {
-  //       _id
-  //       name
-  //       email
-  //     }
-  //     error {
-  //       message
-  //     }
-  //   }
-  // }
-  // `;
-  //
-  // const fetchMeData = async (query, variables) => {
-  //   // const { data, error, status } = await axios.post(GQL_ENDPOINT, {
-  //   const data = await axios.post(GQL_ENDPOINT, {
-  //     query,
-  //     variables,
-  //     body: JSON.stringify({ query, variables }),
-  //   });
-  //
-  //   if (!data) {
-  //     console.log("error from me", data);
-  //   }
-  //   if (data) {
-  //     return data.data.data;
-  //   }
-  // };
-  //
-  // const useMeData = (userEmail) =>
-  //   useQuery("ME", () => fetchMeData(query, { email: userEmail }), {
-  //     enabled: !!userEmail,
-  //   });
+    const client = new SubscriptionClient(GQL_SUBSCRIPTION_ENDPOINT, {
+      reconnect: true,
+      lazy: true, // only connect when there is a query
+      connectionCallback: (error) => {
+        error && console.error(error);
+      },
+    });
 
-  // const refreshToken = async () => {
-  //   const data = await axios.get(`${REST_BASE_ENDPOINT}/auth/refresh`);
-  //
-  //   console.log("data from refreshToken", data);
-  //   const json = await data.json();
-  //   console.log("json from refreshToken", json);
-  //
-  //   console.log("json data from refreshToken", json.data);
-  //   return json.data;
-  // };
-  //
-  // const useGetRefreshToken = () => {
-  //   return useMutation("refresh", () => refreshToken());
-  // };
+    // client.request({ query });
+
+    const subscription = client.request({ query }).subscribe({
+      next({ data }) {
+        if (data) {
+          console.log("we got Something!", data);
+          setFakeNotification(true);
+          setFakeCount((fakeCount) => fakeCount + 1);
+        }
+      },
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
     <UserContext.Provider
-      value={
-        {
-          // useMeData,
-          // useGetRefreshToken,
-          // mutate,
-          // data,
-          // status,
-          // reset,
-          // useLogin,
-          // userEmail,
-          // setUserEmail,
-          // token,
-          // setToken,
-          // inMemToken,
-          // countDown,
-        }
-      }>
+      value={{
+        fakeCount,
+        setFakeCount,
+        fakeNotification,
+        setFakeNotification,
+      }}>
       {props.children}
     </UserContext.Provider>
   );

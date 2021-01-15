@@ -1,0 +1,8 @@
+.fakeNotification {
+  border-radius: 50%;
+  background: aqua;
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+}
