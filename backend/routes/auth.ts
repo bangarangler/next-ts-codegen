@@ -66,7 +66,9 @@ router.post("/login", async (req: Request, res: Response) => {
 
   res.cookie(REFRESH_COOKIE_NAME, refreshToken, {
     httpOnly: __prod__,
-    // domain: "example.com",
+    sameSite: "lax",
+    secure: __prod__,
+    domain: __prod__ ? "nodereacttesting.nowigence.ai" : undefined,
   });
 
   res.status(200).json({
@@ -126,8 +128,11 @@ router.post("/register", async (req: Request, res: Response) => {
   console.log("accessToken from reg", accessToken);
   // req.session.userId = refreshToken
   res.cookie(REFRESH_COOKIE_NAME, refreshToken, {
-    httpOnly: __prod__,
     // domain: "example.com",
+    httpOnly: __prod__,
+    sameSite: "lax",
+    secure: __prod__,
+    domain: __prod__ ? "nodereacttesting.nowigence.ai" : undefined,
   });
 
   res.status(200).json({
@@ -180,8 +185,11 @@ router.get("/refresh", async (req: Request, res: Response) => {
     // console.log("newRefTok", newRefTok);
     res.clearCookie(REFRESH_COOKIE_NAME);
     res.cookie(REFRESH_COOKIE_NAME, newRefTok, {
-      httpOnly: __prod__,
       // domain: "example.com",
+      httpOnly: __prod__,
+      sameSite: "lax",
+      secure: __prod__,
+      domain: __prod__ ? "nodereacttesting.nowigence.ai" : undefined,
     });
 
     res.status(200).json({

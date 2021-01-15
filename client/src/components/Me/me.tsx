@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useAxiosContext, useUserContext } from "../../context/allContexts";
 import { useMeData } from "../../react-query-hooks/useMe";
+//@ts-ignore
 import styles from "./me.module.css";
 
 const Me = () => {

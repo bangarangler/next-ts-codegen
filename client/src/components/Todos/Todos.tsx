@@ -1,6 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+//@ts-ignore
 import { TodoDocument } from "../../generated/graphql";
 import { useTodos } from "../../react-query-hooks/useTodos";
 import { useTodosSubContext } from "../../context/composibleContext/TodosSubContext";
@@ -8,6 +9,7 @@ import Todo from "./Todo";
 import AddNewTodo from "./AddNewTodo";
 import EditTodo from "./EditTodo";
 import { TodosState, TodosActions } from "./TodosTypes";
+//@ts-ignore
 import styles from "./Todos.module.css";
 
 const todosReducer = (state: TodosState, action: TodosActions) => {

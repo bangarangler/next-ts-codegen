@@ -1,7 +1,9 @@
 import { FC, useEffect } from "react";
+//@ts-ignore
 import { TodoDocument } from "../../generated/graphql";
 import { useDeleteTodo } from "../../react-query-hooks/useDeleteTodo";
 import { useQueryClient } from "react-query";
+//@ts-ignore
 import styles from "./Todo.module.css";
 
 const Todo: FC<TodoDocument> = ({ todo, selectTodo }) => {
