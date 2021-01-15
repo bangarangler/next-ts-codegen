@@ -8,7 +8,7 @@ export const __prod_cors__ =
         ],
         credentials: true,
       }
-    : { origin: ["https://webaddygoeshere.com"], credentials: true };
+    : { origin: ["https://nodereacttesting.nowigence.ai"], credentials: true };
 
 export const __prod__ = process.env.NODE_ENV === "production" ? true : false;
 
