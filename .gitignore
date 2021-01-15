@@ -4,6 +4,8 @@ node_modules
 # BACKEND
 backend/node_modules
 backend/.env
+kubernetes/backend-secret.yaml
+kubernetes/client-secret.yaml
 
 # FRONTEND
 client/node_modules
