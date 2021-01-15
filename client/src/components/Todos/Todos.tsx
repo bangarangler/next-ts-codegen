@@ -1,6 +1,9 @@
 import { useEffect, useReducer } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { TodoDocument } from "../../generated/graphql";
 import { useTodos } from "../../react-query-hooks/useTodos";
+import { useTodosSubContext } from "../../context/composibleContext/TodosSubContext";
 import Todo from "./Todo";
 import AddNewTodo from "./AddNewTodo";
 import EditTodo from "./EditTodo";
@@ -25,10 +28,31 @@ const initState: TodosState = {
   todoToEdit: {},
 };
 
+const TodoAddedToast = () => {
+  const { newTodoFromSub } = useTodosSubContext();
+  // console.log("newTodoFromSub", newTodoFromSub);
+  return (
+    <>
+      <p>{newTodoFromSub?.name} was added</p>
+    </>
+  );
+};
+
 const Todos = () => {
+  const { haveNewTodo, setHaveNewTodo, newTodoFromSub } = useTodosSubContext();
   const { data, status, error } = useTodos();
   const [todosState, todosDispatch] = useReducer(todosReducer, initState);
   const { todoToEdit } = todosState;
+  // const notify = () => toast("Wow so easy !");
+  const displayTodoAddedToast = () => {
+    toast.success(<TodoAddedToast />);
+  };
+
+  useEffect(() => {
+    // notify();
+    displayTodoAddedToast();
+    // setHaveNewTodo(false);
+  }, [newTodoFromSub]);
 
   useEffect(() => {
     switch (status) {
@@ -61,6 +85,7 @@ const Todos = () => {
 
   return (
     <div className={styles.todosContainer}>
+      <ToastContainer />
       <div className={styles.todosListWrapper}>
         <div>List of Todos</div>
         {data?.todos?.todos?.map((todo: TodoDocument) => {

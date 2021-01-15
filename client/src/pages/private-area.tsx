@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { TodosSubProvider } from "../context/composibleContext/TodosSubContext";
 import Cookies from "js-cookie";
 import Todos from "../components/Todos/Todos";
 import Me from "../components/Me/me";
@@ -48,8 +49,10 @@ const PrivateArea = () => {
       <div>Private Area!</div>
       <button onClick={() => logout()}>Logout</button>
       <Me />
-      <Todos />
-      <Test />
+      <TodosSubProvider>
+        <Todos />
+        <Test />
+      </TodosSubProvider>
     </>
   );
 };

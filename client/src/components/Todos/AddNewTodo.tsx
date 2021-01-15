@@ -24,7 +24,6 @@ const addNewTodoReducer = (
       return {
         ...state,
         name: "",
-        userId: "",
         uiError: "",
       };
     default:
