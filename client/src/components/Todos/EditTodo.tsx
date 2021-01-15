@@ -1,5 +1,6 @@
 import { useReducer, useEffect } from "react";
 import { useQueryClient } from "react-query";
+import { toast, ToastContainer } from "react-toastify";
 // import { toErrorMap } from "../../utils/toErrorMap";
 import { useAxiosContext } from "../../context/allContexts";
 import { useEditTodo } from "../../react-query-hooks/useEditTodo";
@@ -51,10 +52,24 @@ const EditTodo = ({ todoToEdit }: any) => {
   // react-query hook
   const { mutate, status, data, error } = useEditTodo(vars);
 
+  const FormToastError = ({ uiError }: any) => {
+    // console.log("toastProps", toastProps);
+    return (
+      <>
+        <div>{uiError}</div>
+      </>
+    );
+  };
+
+  const showFormToastError = (uiError: any) => {
+    toast.error(<FormToastError uiError={uiError} />);
+  };
+
   const submitEditTodo = async (e: any) => {
     e.preventDefault();
     if (!name || !user?.id || !todoToEdit?._id) {
       editTodoDispatch({ type: "uiError", payload: "Must Fill Form Out!" });
+      showFormToastError(uiError);
     }
     // mutate({ name, userId: user?.id, todoId: todoToEdit?._id } as any);
     mutate();
@@ -80,6 +95,7 @@ const EditTodo = ({ todoToEdit }: any) => {
 
   return (
     <>
+      <ToastContainer />
       {uiError && <div>{uiError}</div>}
       <form onSubmit={(e) => submitEditTodo(e)}>
         <div>
@@ -96,9 +112,7 @@ const EditTodo = ({ todoToEdit }: any) => {
               })
             }
           />
-          <button
-            type="submit"
-            disabled={!name || !user?.id || !todoToEdit._id}>
+          <button type="submit" disabled={!user?.id || !todoToEdit._id}>
             Edit Todo!
           </button>
         </div>

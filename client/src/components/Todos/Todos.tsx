@@ -39,7 +39,7 @@ const TodoAddedToast = () => {
 };
 
 const Todos = () => {
-  const { haveNewTodo, setHaveNewTodo, newTodoFromSub } = useTodosSubContext();
+  const { newTodoFromSub } = useTodosSubContext();
   const { data, status, error } = useTodos();
   const [todosState, todosDispatch] = useReducer(todosReducer, initState);
   const { todoToEdit } = todosState;
@@ -50,8 +50,9 @@ const Todos = () => {
 
   useEffect(() => {
     // notify();
-    displayTodoAddedToast();
-    // setHaveNewTodo(false);
+    if (newTodoFromSub) {
+      displayTodoAddedToast();
+    }
   }, [newTodoFromSub]);
 
   useEffect(() => {

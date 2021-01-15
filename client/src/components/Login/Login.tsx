@@ -28,10 +28,10 @@ const initState: State = {
 const Login = () => {
   // context state / react-query mutation data
   const { setUser, setToken } = useAxiosContext();
-  const { mutate, data, status, error } = useLogin();
   // local form state
   const [state, dispatch] = useReducer(reducer, initState);
   const { email, password } = state;
+  const { mutate, data, status, error } = useLogin();
   // next-router
   const router = useRouter();
 
@@ -55,9 +55,8 @@ const Login = () => {
         //   return;
         // }
         // console.log("data.email", data.email);
-        console.log("data.email", data.email);
-        console.log("data.accessToken", data.accessToken);
-        // setUserEmail(data.email);
+        // console.log("data from success login!!!!!!", data);
+        // console.log("data.accessToken", data.accessToken);
         setUser(data);
         setToken(data.accessToken);
         // temp

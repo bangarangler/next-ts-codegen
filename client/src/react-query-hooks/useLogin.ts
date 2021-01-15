@@ -8,7 +8,8 @@ interface LoginInput {
   password: string;
 }
 
-export function useLogin(loginInput: LoginInput) {
+// export function useLogin(loginInput: LoginInput) {
+export function useLogin() {
   console.log("running useLogin");
   // const { axios } = useAxiosContext();
 
@@ -18,7 +19,7 @@ export function useLogin(loginInput: LoginInput) {
         `${REST_BASE_ENDPOINT}/auth/login`,
         loginInput
       );
-      console.log("data", data);
+      console.log("data from useLogin", data);
       if (data.data) {
         return data.data;
       }

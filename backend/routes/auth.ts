@@ -75,6 +75,7 @@ router.post("/login", async (req: Request, res: Response) => {
       accessTokenExp: ACCESS_TOKEN_EXPIRES,
       success: true,
       email,
+      id: userExists._id,
     },
   });
 });
@@ -135,6 +136,7 @@ router.post("/register", async (req: Request, res: Response) => {
       accessTokenExp: ACCESS_TOKEN_EXPIRES,
       success: true,
       email,
+      id: newUserRes.ops[0]._id,
     },
   });
 });
