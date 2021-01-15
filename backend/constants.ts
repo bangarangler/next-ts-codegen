@@ -3,12 +3,27 @@ export const __prod_cors__ =
     ? {
         origin: [
           "http://localhost:3000",
-          "http://localhost:4000/login",
+          "http://localhost:4000",
           "http://localhost:4000/graphql",
+          "ws://localhost:4000/graphql",
+          // "ws://localhost:5050/graphql",
         ],
         credentials: true,
       }
     : { origin: ["https://nodereacttesting.nowigence.ai"], credentials: true };
+
+// export const __prod_cors__ =
+//   process.env.NODE_ENV !== "production"
+//     ? {
+//         origin: [
+//           "http://frontend:3000",
+//           "http://backend:4000",
+//           "http://backend:4000/graphql",
+//           "ws://backend:4000/graphql",
+//         ],
+//         credentials: true,
+//       }
+//     : { origin: ["https://nodereacttesting.nowigence.ai"], credentials: true };
 
 export const __prod__ = process.env.NODE_ENV === "production" ? true : false;
 

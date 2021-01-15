@@ -1,0 +1,18 @@
+FROM node:14.5.0
+
+WORKDIR /usr/src/backend
+
+COPY package.json ./
+
+RUN npm install
+
+COPY . .
+COPY .env .env
+
+# RUN npm run build
+
+# ENV NODE_ENV production
+
+EXPOSE 4000
+CMD [ "npm", "run", "dev" ]
+USER node
