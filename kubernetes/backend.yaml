@@ -30,6 +30,39 @@ spec:
       containers:
         - name: backend
           image: bangarangler/next-backend:latest
-          envFrom:
-            - secretRef:
-                name: backend-secret
+          env:
+            - name: MONGO_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: MONGO_STRING
+            - name: REDIS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: REDIS_SECRET
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: JWT_SECRET_KEY
+            - name: REFRESH_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: REFRESH_SECRET_KEY
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config-map
+                  key: PORT
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config-map
+                  key: REDIS_PORT
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config-map
+                  key: REDIS_HOST
