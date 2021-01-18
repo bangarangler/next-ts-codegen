@@ -1,7 +1,9 @@
 version: "3.8"
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      target: development
     ports:
       - '4000:4000'
     volumes:
@@ -12,7 +14,9 @@ services:
     depends_on:
       - bang-redis
   frontend:
-    build: ./client
+    build:
+      context: ./client
+      target: development
     ports:
       - '3000:3000'
     volumes:
