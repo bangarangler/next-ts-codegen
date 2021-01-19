@@ -30,7 +30,13 @@ spec:
       containers:
         - name: frontend
           image: bangarangler/next-frontend:latest
-          envFrom:
-            - secretRef:
-                name: client-secret
+          env:
+            - name: NEXT_PUBLIC_JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: client-secret
+                  key: NEXT_PUBLIC_JWT_SECRET_KEY
+          # envFrom:
+          #   - secretRef:
+          #       name: client-secret
 
