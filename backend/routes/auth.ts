@@ -68,7 +68,7 @@ router.post("/login", async (req: Request, res: Response) => {
     httpOnly: __prod__,
     sameSite: "lax",
     secure: __prod__,
-    domain: __prod__ ? "nodereacttesting.nowigence.ai" : undefined,
+    domain: __prod__ ? "bang-k8s.com" : undefined,
   });
 
   res.status(200).json({
@@ -132,7 +132,7 @@ router.post("/register", async (req: Request, res: Response) => {
     httpOnly: __prod__,
     sameSite: "lax",
     secure: __prod__,
-    domain: __prod__ ? "nodereacttesting.nowigence.ai" : undefined,
+    domain: __prod__ ? "bang-k8s.com" : undefined,
   });
 
   res.status(200).json({
@@ -189,7 +189,7 @@ router.get("/refresh", async (req: Request, res: Response) => {
       httpOnly: __prod__,
       sameSite: "lax",
       secure: __prod__,
-      domain: __prod__ ? "nodereacttesting.nowigence.ai" : undefined,
+      domain: __prod__ ? "bang-k8s.com" : undefined,
     });
 
     res.status(200).json({

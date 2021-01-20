@@ -3,9 +3,9 @@ kind: ConfigMap
 metadata:
   name: backend-config-map
 data:
-  PORT: 4000
-  REDIS_PORT: 27812
-  REDIS_HOST: redis-next-app-bangarangler-0e5f.aivencloud.com
+  PORT: "4000"
+  REDIS_PORT: "27812"
+  REDIS_HOST: "redis-next-app-bangarangler-0e5f.aivencloud.com"
   # REDIS_PORT: 6379
   # REDIS_HOST: 'backend-service.default:4000'
   # REDIS_HOST: bang-redis

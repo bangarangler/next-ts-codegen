@@ -7,7 +7,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 // import { __prod_cors__, __prod__, REDIS_COOKIE_NAME } from "./constants";
-import { __prod_cors__, __prod__ } from "./constants";
+import { __prod_cors__, __prod__, URL } from "./constants";
 import { typeDefs } from "./graphql/typeDefs";
 import { resolvers } from "./graphql/resolvers";
 import { ServerContext } from "./ServerContext";
@@ -129,10 +129,12 @@ try {
     const port = process.env.PORT;
     httpServer.listen(port, () => {
       console.log(
-        `Subscription ready at ws://localhost:${process.env.PORT}${server.subscriptionsPath}`
+        // `Subscription ready at ws://localhost:${process.env.PORT}${server.subscriptionsPath}`
+        `Subscription ready at ws://${URL}:${process.env.PORT}${server.subscriptionsPath}`
       );
       console.log(
-        `Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`
+        // `Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`
+        `Server ready at http://${URL}:${process.env.PORT}${server.graphqlPath}`
       );
     });
   } catch (err) {

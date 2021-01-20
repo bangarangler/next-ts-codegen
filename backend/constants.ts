@@ -10,20 +10,13 @@ export const __prod_cors__ =
         ],
         credentials: true,
       }
-    : { origin: ["https://nodereacttesting.nowigence.ai"], credentials: true };
+    : // : { origin: ["https://nodereacttesting.nowigence.ai"], credentials: true };
+      { origin: ["https://bang-k8s.com"], credentials: true };
 
-// export const __prod_cors__ =
-//   process.env.NODE_ENV !== "production"
-//     ? {
-//         origin: [
-//           "http://frontend:3000",
-//           "http://backend:4000",
-//           "http://backend:4000/graphql",
-//           "ws://backend:4000/graphql",
-//         ],
-//         credentials: true,
-//       }
-//     : { origin: ["https://nodereacttesting.nowigence.ai"], credentials: true };
+export const URL =
+  process.env.NODE_ENV === "production"
+    ? "backend-service.next-app"
+    : "localhost";
 
 export const __prod__ = process.env.NODE_ENV === "production" ? true : false;
 

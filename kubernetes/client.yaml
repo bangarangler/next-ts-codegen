@@ -8,7 +8,7 @@ spec:
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 3000
+      port: 80
       targetPort: 3000
 
 ---
@@ -28,14 +28,20 @@ spec:
         app: client
     spec:
       containers:
-        - name: frontend
+        - name: client
           image: bangarangler/next-frontend:latest
           env:
+            - name: "REACT_APP_ENVIRONMENT"
+              value: "PROD"
             - name: NEXT_PUBLIC_JWT_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: client-secret
                   key: NEXT_PUBLIC_JWT_SECRET_KEY
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+      restartPolicy: Always
           # envFrom:
           #   - secretRef:
           #       name: client-secret

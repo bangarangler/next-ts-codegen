@@ -25,7 +25,7 @@ FROM base as production
 RUN npm install
 
 COPY . .
-COPY .env.production .env.production
+COPY .env.production .env
 
 RUN npm run build
 ENV NODE_ENV production

@@ -71,3 +71,7 @@ spec:
                 secretKeyRef:
                   name: backend-secret
                   key: REDIS_PASSWORD
+          ports:
+            - containerPort: 4000
+              protocol: TCP
+      restartPolicy: Always
