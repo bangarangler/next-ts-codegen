@@ -1,5 +1,7 @@
 # ROOT DIR
 node_modules
+config-next
+DO-config-next
 
 # BACKEND
 backend/node_modules
