@@ -141,5 +141,5 @@ try {
     console.log("Hold up main is busted");
   }
 } catch (err) {
-  console.log("err");
+  console.log("err", err);
 }

@@ -28,6 +28,10 @@ RUN npm ci
 
 COPY . .
 COPY .env .env
+# Handled in backend package.json here for documentation the .graphql files
+# inside ./graphql/types need to be moved inside of ./dist/graphql/types post
+# build
+# COPY ./graphql/types ./graphql/types
 
 RUN npm run build
 ENV NODE_ENV production
