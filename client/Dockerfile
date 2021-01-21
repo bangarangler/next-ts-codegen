@@ -28,6 +28,7 @@ COPY . .
 COPY .env.production .env
 
 RUN npm run build
+# RUN npm run build:static
 ENV NODE_ENV production
 
 CMD ["npm", "start"]

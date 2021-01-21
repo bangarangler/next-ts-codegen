@@ -9,6 +9,7 @@ backend/.env
 backend/dist
 kubernetes/backend-secret.yaml
 kubernetes/client-secret.yaml
+backend/out/
 
 # FRONTEND
 client/node_modules
