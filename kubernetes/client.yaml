@@ -36,8 +36,10 @@ spec:
         - name: client
           image: bangarangler/next-frontend:latest
           env:
-            - name: "REACT_APP_ENVIRONMENT"
-              value: "PROD"
+            - name: NEXT_PUBLIC_API_ADDRESS
+              value: 'backend-service.next-app:4000'
+            # - name: "REACT_APP_ENVIRONMENT"
+            #   value: "PROD"
             - name: NEXT_PUBLIC_JWT_SECRET_KEY
               valueFrom:
                 secretKeyRef:

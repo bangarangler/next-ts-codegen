@@ -6,7 +6,8 @@
 export const GQL_ENDPOINT =
   process.env.NODE_ENV === "production"
     ? // ? "https://nodereacttesting.nowigence.ai/graphql"
-      "http://backend-service.next-app:4000/graphql"
+      // "http://backend-service.next-app:4000/graphql"
+      `http://${process.env.NEXT_PUBLIC_API_ADDRESS}/graphql`
     : // "https://10.245.111.240"
       // "https://bang-k8s.com/graphql"
       "http://localhost:4000/graphql";
@@ -19,7 +20,8 @@ export const GQL_ENDPOINT =
 export const GQL_SUBSCRIPTION_ENDPOINT =
   process.env.NODE_ENV === "production"
     ? // ? "ws://nodereacttesting.nowigence.ai/graphql"
-      "ws://backend-service.next-app:4000/graphql"
+      // "ws://backend-service.next-app:4000/graphql"
+      `ws://${process.env.NEXT_PUBLIC_API_ADDRESS}/graphql`
     : // "https://10.245.111.240"
       // "ws://bang-k8s.com/graphql"
       "ws://localhost:4000/graphql";
@@ -32,6 +34,7 @@ export const GQL_SUBSCRIPTION_ENDPOINT =
 export const REST_BASE_ENDPOINT =
   process.env.NODE_ENV === "production"
     ? // ? "https://nodereacttesting.nowigence.ai"
-      "http://backend-service.next-app:4000"
+      // "http://backend-service.next-app:4000"
+      `http://${process.env.NEXT_PUBLIC_API_ADDRESS}`
     : // "https://10.245.111.240" // "https://bang-k8s.com"
       "http://localhost:4000";
