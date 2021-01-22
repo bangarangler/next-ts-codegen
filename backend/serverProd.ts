@@ -67,12 +67,6 @@ try {
   // REST ROUTES LOOK HERE FOR LOGIN, REGISTER, LOGOUT
   app.use("/auth", authRoutes);
 
-  app.get("*", (req, res) => {
-    console.log("dirname", __dirname);
-    console.log("dirname", __dirname + "/build/index.html");
-    res.sendFile(path.join(__dirname + "/build/index.html"));
-  });
-
   app.use(authMiddleware);
 
   app.use(express.static(path.join(__dirname, "./build")));
@@ -131,6 +125,12 @@ try {
     //   );
     // }
   };
+
+  app.get("*", (req, res) => {
+    console.log("dirname", __dirname);
+    console.log("dirname", __dirname + "/build/index.html");
+    res.sendFile(path.join(__dirname + "/build/index.html"));
+  });
 
   const server = new ApolloServer({
     typeDefs,
