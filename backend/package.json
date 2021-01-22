@@ -53,7 +53,7 @@
     "build": "rm -rf ./dist && tsc && cp -R ./graphql/types ./dist/graphql/types",
     "old-build": "tsc",
     "start": "tsc && node dist/server.js",
-    "start:prod": "tsc && node dist/serverProd.js",
+    "start:prod": "tsc && NODE_ENV=production node dist/serverProd.js",
     "post-build": "cp -R ./graphql/types ./dist/graphql/types",
     "dev": "nodemon server.ts",
     "gen": "graphql-codegen --config codegen.yml",
