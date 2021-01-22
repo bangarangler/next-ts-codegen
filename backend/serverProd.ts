@@ -67,15 +67,9 @@ try {
   // REST ROUTES LOOK HERE FOR LOGIN, REGISTER, LOGOUT
   app.use("/auth", authRoutes);
 
-  app.use(
-    "/static/css/*",
-    express.static(path.join(__dirname, "/build/static/css"))
-  );
-  app.use(
-    "/static/js/*",
-    express.static(path.join(__dirname, "/build/static/js"))
-  );
-  app.use("/static/*", express.static(path.join(__dirname, "/build/static")));
+  // app.use(express.static(path.join(__dirname, "/build/static/css")));
+  // app.use(express.static(path.join(__dirname, "/build/static/js")));
+  app.use(express.static(path.join(__dirname, "/build/static")));
 
   app.get("/*", (req, res) => {
     console.log("dirname", __dirname);
