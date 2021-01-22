@@ -67,9 +67,15 @@ try {
   // REST ROUTES LOOK HERE FOR LOGIN, REGISTER, LOGOUT
   app.use("/auth", authRoutes);
 
+  app.get("*", (req, res) => {
+    console.log("dirname", __dirname);
+    console.log("dirname", __dirname + "/build/index.html");
+    res.sendFile(path.join(__dirname + "/build/index.html"));
+  });
+
   app.use(authMiddleware);
 
-  app.use(express.static(path.join(__dirname, "./build")));
+  app.use("/", express.static(path.join(__dirname, "./build")));
 
   // if (process.env.TEST_SERVER === "true") {
   const privateKey = fs.readFileSync(
@@ -92,10 +98,6 @@ try {
     cert: certificate,
     ca: ca,
   };
-  // httpsServer = https.createServer(credentials, app);
-  // } else {
-  // httpsServer = https.createServer(app);
-  // }
 
   const context = async ({ req, res, connection, redis }: ServerContext) => {
     if (connection) {
@@ -125,12 +127,6 @@ try {
     //   );
     // }
   };
-
-  app.get("*", (req, res) => {
-    console.log("dirname", __dirname);
-    console.log("dirname", __dirname + "/build/index.html");
-    res.sendFile(path.join(__dirname + "/build/index.html"));
-  });
 
   const server = new ApolloServer({
     typeDefs,
