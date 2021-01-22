@@ -31,6 +31,9 @@ import { authMiddleware } from "./middleware/auth.middleware";
 //   email: string;
 // }
 
+console.log("REDIS_HOST", process.env.REDIS_HOST);
+console.log("REDIS_PORT", process.env.REDIS_PORT);
+console.log("REDIS_PASSWORD", process.env.REDIS_PASSWORD);
 try {
   const redisOptions = {
     host: process.env.REDIS_HOST || "127.0.0.1",
@@ -47,39 +50,17 @@ try {
     subscriber: new Redis(redisOptions as any),
   });
   const app = express();
+
+  // Don't redirect if the hostname is `localhost:port` or the route is `/insecure`
+  // TODO: possible remove this after behind SSL LB may not need it all
   app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
 
-  // REDIS
-  // const RedisStore = connectRedis(session);
-  // const redis = new Redis(process.env.REDIS_PORT);
-  // if (!redis) throw new Error("Redis Not Connected!!!");
-  // app.set("trust proxy", 1) // needed if used with loadbalancer
-  // const corsConfig = __prod_cors__;
-  // app.use(cors(corsConfig));
-
-  // app.use(
-  //   session({
-  //     name: REDIS_COOKIE_NAME,
-  //     store: new RedisStore({ client: redis, disableTouch: true }),
-  //     // cookie: {
-  //     //   maxAge: mili,
-  //     //   httpOnly: __prod__,
-  //     //   sameSite: "lax",
-  //     //   secure: __prod__,
-  //     //   domain: __prod__ ? "domain here" : undefined
-  //     // },
-  //     saveUninitialized: false,
-  //     secret: process.env.REDIS_SECRET!,
-  //     resave: false,
-  //   })
-  // );
+  const corsConfig = __prod_cors__;
+  app.use(cors(corsConfig));
 
   app.use(cookieParser());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
-
-  const corsConfig = __prod_cors__;
-  app.use(cors(corsConfig));
 
   // REST ROUTES LOOK HERE FOR LOGIN, REGISTER, LOGOUT
   app.use("/auth", authRoutes);
@@ -115,6 +96,7 @@ try {
     //   );
     // }
   };
+
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname + "/build/index.html"));
   });
@@ -136,9 +118,12 @@ try {
   server.installSubscriptionHandlers(httpServer);
   server.installSubscriptionHandlers(httpsServer);
 
+  console.log("PORT", process.env.PORT);
+  console.log("URL", URL);
   try {
     // const port = process.env.PORT;
-    const port = 80;
+    // const port = 80;
+    const port = process.env.PORT;
     httpServer.listen(port, () => {
       console.log(
         // `Subscription ready at ws://localhost:${process.env.PORT}${server.subscriptionsPath}`
@@ -152,11 +137,11 @@ try {
     httpsServer.listen(443, () => {
       console.log(
         // `Subscription ready at ws://localhost:${process.env.PORT}${server.subscriptionsPath}`
-        `HTTPS Subscription ready at ws://${URL}:${process.env.PORT}${server.subscriptionsPath}`
+        `HTTPS Subscription ready at ws://${URL}:443${server.subscriptionsPath}`
       );
       console.log(
         // `Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`
-        `HTTPS Server ready at http://${URL}:${process.env.PORT}${server.graphqlPath}`
+        `HTTPS Server ready at http://${URL}:443${server.graphqlPath}`
       );
     });
   } catch (err) {

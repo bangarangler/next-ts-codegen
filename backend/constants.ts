@@ -14,20 +14,23 @@ export const __prod_cors__ =
       {
         origin: [
           "https://bang-k8s.com",
-          "ws://backend-service.next-app:4000",
-          "https://backend-service.next-app:4000",
+          "ws://bang-k8s.com",
+          "https://bang-k8s.com",
+          // "ws://backend-service.next-app:4000",
+          // "https://backend-service.next-app:4000",
         ],
         credentials: true,
       };
 
 export const URL =
   process.env.NODE_ENV === "production"
-    ? "backend-service.next-app"
+    ? // ? "backend-service.next-app"
+      "bang-k8s.com"
     : "localhost";
 
 export const __prod__ = process.env.NODE_ENV === "production" ? true : false;
 
-export const COOKIE_NAME = "voldemort";
+// export const COOKIE_NAME = "voldemort";
 
 export const REDIS_COOKIE_NAME = "redis-riddle";
 
