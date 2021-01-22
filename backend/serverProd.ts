@@ -69,7 +69,7 @@ try {
 
   // app.use(express.static(path.join(__dirname, "/build/static/css")));
   // app.use(express.static(path.join(__dirname, "/build/static/js")));
-  app.use(express.static(path.join(__dirname, "/build/static")));
+  app.use(express.static(path.join(__dirname, "/build")));
 
   app.get("/*", (req, res) => {
     console.log("dirname", __dirname);
