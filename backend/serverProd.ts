@@ -67,6 +67,8 @@ try {
   // REST ROUTES LOOK HERE FOR LOGIN, REGISTER, LOGOUT
   app.use("/auth", authRoutes);
 
+  app.use(express.static(path.join(__dirname, "./build")));
+
   app.get("*", (req, res) => {
     console.log("dirname", __dirname);
     console.log("dirname", __dirname + "/build/index.html");
@@ -74,8 +76,6 @@ try {
   });
 
   app.use(authMiddleware);
-
-  app.use("/", express.static(path.join(__dirname, "./build")));
 
   // if (process.env.TEST_SERVER === "true") {
   const privateKey = fs.readFileSync(
