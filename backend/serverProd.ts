@@ -85,7 +85,7 @@ try {
   app.use("/auth", authRoutes);
   app.use(authMiddleware);
 
-  app.use(express.static(path.join(__dirname, "./out")));
+  app.use(express.static(path.join(__dirname, "./build")));
 
   const context = async ({ req, res, connection, redis }: ServerContext) => {
     if (connection) {
@@ -116,7 +116,7 @@ try {
     // }
   };
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname + "/out/index.html"));
+    res.sendFile(path.join(__dirname + "/build/index.html"));
   });
 
   const server = new ApolloServer({

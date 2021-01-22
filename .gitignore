@@ -5,6 +5,7 @@ DO-config-next
 
 # BACKEND
 backend/node_modules
+backend/build
 backend/.env
 backend/dist
 kubernetes/backend-secret.yaml
