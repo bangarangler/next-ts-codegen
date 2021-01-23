@@ -70,6 +70,7 @@ try {
   // app.use(express.static(path.join(__dirname, "/build/static/css")));
   // app.use(express.static(path.join(__dirname, "/build/static/js")));
   app.use(express.static(path.join(__dirname, "..", "build")));
+  app.use(express.static(path.join(__dirname, "..", "build/static/*")));
   app.use(express.static("public"));
   // TODO: issue here maybe... don't see reference to it in any docs
   // app.use(express.static(path.join("public")));
