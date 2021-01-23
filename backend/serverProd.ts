@@ -69,9 +69,10 @@ try {
 
   // app.use(express.static(path.join(__dirname, "/build/static/css")));
   // app.use(express.static(path.join(__dirname, "/build/static/js")));
-  app.use(express.static(path.join(__dirname, "..", "build")));
-  app.use(express.static(path.join(__dirname, "..", "build/static/*")));
-  app.use(express.static("public"));
+  // app.use(express.static(path.join(__dirname, "..", "build")));
+  // app.use(express.static(path.join(__dirname, "..", "build/static/*")));
+  // app.use(express.static("public"));
+  app.use(express.static("../frontend/build/"));
   // TODO: issue here maybe... don't see reference to it in any docs
   // app.use(express.static(path.join("public")));
 
@@ -98,11 +99,12 @@ try {
   };
 
   app.get("*", (req, res) => {
-    console.log("dirname", __dirname);
+    // console.log("dirname", __dirname);
     // console.log("dirname", __dirname + "/build/index.html");
-    console.log("dirname", path.join(__dirname, "..", "build", "index.html"));
+    // console.log("dirname", path.join(__dirname, "..", "build", "index.html"));
     // res.sendFile(path.join(__dirname + "/build/index.html"));
-    res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+    // res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+    res.sendFile("../frontend/build/index.html");
   });
 
   app.use(authMiddleware);
