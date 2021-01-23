@@ -64,12 +64,12 @@ try {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
+  app.use(express.static(path.join(__dirname, "build")));
   // REST ROUTES LOOK HERE FOR LOGIN, REGISTER, LOGOUT
   app.use("/auth", authRoutes);
 
   // app.use(express.static(path.join(__dirname, "/build/static/css")));
   // app.use(express.static(path.join(__dirname, "/build/static/js")));
-  app.use(express.static(path.join(__dirname, "/build")));
 
   app.get("*", (req, res) => {
     console.log("dirname", __dirname);
