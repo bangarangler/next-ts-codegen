@@ -1,7 +1,7 @@
 import dotenv from "dotenv-safe";
 dotenv.config();
 import { ApolloServer } from "apollo-server-express";
-import { createServer } from "http";
+// import { createServer } from "http";
 import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
@@ -55,31 +55,23 @@ try {
 
   // Don't redirect if the hostname is `localhost:port` or the route is `/insecure`
   // TODO: possible remove this after behind SSL LB may not need it all
-  app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
 
   const corsConfig = __prod_cors__;
   app.use(cors(corsConfig));
+  app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
 
   app.use(cookieParser());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
-  app.use(express.static(path.join(__dirname, "build")));
   // REST ROUTES LOOK HERE FOR LOGIN, REGISTER, LOGOUT
   app.use("/auth", authRoutes);
 
   // app.use(express.static(path.join(__dirname, "/build/static/css")));
   // app.use(express.static(path.join(__dirname, "/build/static/js")));
-
-  app.get("*", (req, res) => {
-    console.log("dirname", __dirname);
-    // console.log("dirname", __dirname + "/build/index.html");
-    console.log("dirname", path.join(__dirname, "build", "index.html"));
-    // res.sendFile(path.join(__dirname + "/build/index.html"));
-    res.sendFile(path.join(__dirname, "build", "index.html"));
-  });
-
-  app.use(authMiddleware);
+  app.use(express.static(path.join(__dirname, "build")));
+  // TODO: issue here maybe... don't see reference to it in any docs
+  // app.use(express.static(path.join("public")));
 
   // if (process.env.TEST_SERVER === "true") {
   const privateKey = fs.readFileSync(
@@ -102,6 +94,16 @@ try {
     cert: certificate,
     ca: ca,
   };
+
+  app.get("*", (req, res) => {
+    console.log("dirname", __dirname);
+    // console.log("dirname", __dirname + "/build/index.html");
+    console.log("dirname", path.join(__dirname, "build", "index.html"));
+    // res.sendFile(path.join(__dirname + "/build/index.html"));
+    res.sendFile(path.join(__dirname, "build", "index.html"));
+  });
+
+  app.use(authMiddleware);
 
   const context = async ({ req, res, connection, redis }: ServerContext) => {
     if (connection) {
@@ -131,6 +133,8 @@ try {
     //   );
     // }
   };
+  const httpServer = http.createServer(app);
+  const httpsServer = https.createServer(credentials, app);
 
   const server = new ApolloServer({
     typeDefs,
@@ -143,9 +147,6 @@ try {
   });
 
   server.applyMiddleware({ app, cors: false });
-
-  const httpServer = http.createServer(app);
-  const httpsServer = https.createServer(credentials, app);
 
   server.installSubscriptionHandlers(httpServer);
   server.installSubscriptionHandlers(httpsServer);
