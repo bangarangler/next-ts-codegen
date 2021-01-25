@@ -4,7 +4,7 @@ import { REST_BASE_ENDPOINT } from "../../constants";
 export const axios = Axios.create({
   headers: {
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "https://bang-k8s.com",
+    // "Access-Control-Allow-Origin": "https://bang-k8s.com",
   },
   // credentials: "include",
   withCredentials: true,
@@ -44,6 +44,7 @@ axios.interceptors.response.use(
         getNewTokens();
       } catch (err) {
         console.log("err from catchblock axiosConfig");
+        console.log("err from interceptors catchblock", err);
         console.log("NEED TO LOG OUT HERE REFRESH IS BAD");
       }
     }
