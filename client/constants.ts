@@ -1,6 +1,6 @@
 export const GQL_ENDPOINT =
   process.env.NODE_ENV === "production"
-    ? "https://bank-k8s.com/graphql"
+    ? "https://bang-k8s.com/graphql"
     : "http://localhost:4000/graphql";
 
 // export const GQL_ENDPOINT =
@@ -10,7 +10,7 @@ export const GQL_ENDPOINT =
 
 export const GQL_SUBSCRIPTION_ENDPOINT =
   process.env.NODE_ENV === "production"
-    ? "ws://bank-k8s.com/graphql"
+    ? "ws://bang-k8s.com/graphql"
     : "ws://localhost:4000/graphql";
 
 // export const GQL_SUBSCRIPTION_ENDPOINT =
