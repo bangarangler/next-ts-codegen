@@ -12,6 +12,12 @@ export const __prod_cors__ =
       }
     : { origin: ["https://nodereacttesting.nowigence.ai"], credentials: true };
 
+export const URL =
+  process.env.NODE_ENV === "production"
+    ? // ? "backend-service.next-app"
+      "bang-k8s.com"
+    : "localhost";
+
 // export const __prod_cors__ =
 //   process.env.NODE_ENV !== "production"
 //     ? {
