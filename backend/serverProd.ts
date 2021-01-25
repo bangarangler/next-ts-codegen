@@ -106,6 +106,7 @@ try {
   app.get("/", (req, res) => {
     res.send("NODE GRAPHQL BACKEND WE IN HERE");
   });
+
   app.use("/auth", authRoutes);
   app.use(authMiddleware);
 

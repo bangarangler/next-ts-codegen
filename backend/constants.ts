@@ -10,7 +10,14 @@ export const __prod_cors__ =
         ],
         credentials: true,
       }
-    : { origin: ["https://nodereacttesting.nowigence.ai"], credentials: true };
+    : {
+        origin: [
+          "https://bang-k8s.com",
+          "https://bang-k8s.com/graphql",
+          "ws://bang-k8s.com/graphql",
+        ],
+        credentials: true,
+      };
 
 export const URL =
   process.env.NODE_ENV === "production"
