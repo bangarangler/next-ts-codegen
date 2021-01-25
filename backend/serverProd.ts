@@ -14,7 +14,7 @@ import { resolvers } from "./graphql/resolvers";
 import { ServerContext } from "./ServerContext";
 import { db } from "./mongoConfig/mongo";
 import Redis from "ioredis";
-import { redirectToHTTPS } from "express-http-to-https";
+// import { redirectToHTTPS } from "express-http-to-https";
 import fs from "fs";
 import { RedisPubSub } from "graphql-redis-subscriptions";
 // import session from "express-session";
@@ -48,7 +48,7 @@ try {
   });
 
   const app = express();
-  app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
+  // app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
 
   const privateKey = fs.readFileSync(
     `/etc/letsencrypt/live/bang-k8s.com/privkey.pem`,
