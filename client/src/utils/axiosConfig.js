@@ -52,7 +52,8 @@ axios.interceptors.response.use(
     if (403 === error.response.status) {
       console.log("LOG USER OUT HERE DAMNIT!");
       localStorage.removeItem("accessToken");
-      window.location.replace("http://localhost:3000");
+      // window.location.replace("http://localhost:3000");
+      window.location.replace(REST_BASE_ENDPOINT);
     }
     return Promise.reject(error);
   }
