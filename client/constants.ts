@@ -1,6 +1,6 @@
 export const GQL_ENDPOINT =
   process.env.NODE_ENV === "production"
-    ? "https://nodereacttesting.nowigence.ai/graphql"
+    ? "https://bank-k8s.com/graphql"
     : "http://localhost:4000/graphql";
 
 // export const GQL_ENDPOINT =
@@ -10,7 +10,7 @@ export const GQL_ENDPOINT =
 
 export const GQL_SUBSCRIPTION_ENDPOINT =
   process.env.NODE_ENV === "production"
-    ? "ws://nodereacttesting.nowigence.ai/graphql"
+    ? "ws://bank-k8s.com/graphql"
     : "ws://localhost:4000/graphql";
 
 // export const GQL_SUBSCRIPTION_ENDPOINT =
@@ -20,7 +20,7 @@ export const GQL_SUBSCRIPTION_ENDPOINT =
 
 export const REST_BASE_ENDPOINT =
   process.env.NODE_ENV === "production"
-    ? "https://nodereacttesting.nowigence.ai"
+    ? "https://bang-k8s.com"
     : "http://localhost:4000";
 
 // export const REST_BASE_ENDPOINT =
