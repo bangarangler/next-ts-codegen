@@ -50,8 +50,8 @@
   },
   "scripts": {
     "**NOPE**": "**COMMENT: the build script deletes the ./dist then runs tsc then cp .graphql files into dist**",
-    "build": "rm -rf ./dist && tsc && cp -R ./graphql/types ./dist/graphql/types && cp -R ./build ./dist",
-    "old-build": "tsc",
+    "build:test": "rm -rf ./dist && tsc && cp -R ./graphql/types ./dist/graphql/types && cp -R ./build ./dist",
+    "build": "tsc",
     "start": "tsc && node dist/server.js",
     "start:prod": "tsc && NODE_ENV=production node dist/serverProd.js",
     "post-build": "cp -R ./graphql/types ./dist/graphql/types",
