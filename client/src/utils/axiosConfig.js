@@ -4,6 +4,7 @@ import { REST_BASE_ENDPOINT } from "../../constants";
 export const axios = Axios.create({
   headers: {
     "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "https://bang-k8s.com",
   },
   // credentials: "include",
   withCredentials: true,
