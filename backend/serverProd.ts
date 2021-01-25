@@ -99,8 +99,21 @@ try {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
-  const corsConfig = __prod_cors__;
-  app.use(cors(corsConfig));
+  // const corsConfig = __prod_cors__;
+
+  let whitelist = ["https://client-cookies-test.vercel.app"];
+  var corsOptions = {
+    origin: function (origin: any, callback: any) {
+      console.log("origin", origin);
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  };
+  app.use(cors(corsOptions));
+  // app.use(cors(corsConfig));
 
   // REST ROUTES LOOK HERE FOR LOGIN, REGISTER, LOGOUT
   app.get("/", (req, res) => {

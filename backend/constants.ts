@@ -11,16 +11,15 @@ export const __prod_cors__ =
         credentials: true,
       }
     : {
-        origin: "*",
-        // origin: [
-        //   // "https://client-cookies-test.vercel.app/",
-        //   // "ws://client-cookies-test.vercel.app/",
-        //   "https://bang-k8s.com/*",
-        //   "https://bang-k8s.com/auth/login",
-        //   "https://bang-k8s.com/auth/*",
-        //   "https://bang-k8s.com/graphql",
-        //   "ws://bang-k8s.com/graphql",
-        // ],
+        origin: [
+          // "https://client-cookies-test.vercel.app/",
+          // "ws://client-cookies-test.vercel.app/",
+          "https://bang-k8s.com/*",
+          "https://bang-k8s.com/auth/login",
+          "https://bang-k8s.com/auth/*",
+          "https://bang-k8s.com/graphql",
+          "ws://bang-k8s.com/graphql",
+        ],
         credentials: true,
       };
 
