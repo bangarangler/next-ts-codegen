@@ -33,9 +33,6 @@ import { authMiddleware } from "./middleware/auth.middleware";
 //   email: string;
 // }
 
-console.log("REDIS_HOST", process.env.REDIS_HOST);
-console.log("REDIS_PORT", process.env.REDIS_PORT);
-console.log("REDIS_PASSWORD", process.env.REDIS_PASSWORD);
 try {
   const redisOptions = {
     host: process.env.REDIS_HOST || "127.0.0.1",
@@ -65,17 +62,13 @@ try {
   app.use(bodyParser.json());
 
   // REST ROUTES LOOK HERE FOR LOGIN, REGISTER, LOGOUT
+  app.get("/", (req, res) => {
+    res.send("NODE GRAPHQL API HERE WE GO...");
+  });
+
   app.use("/auth", authRoutes);
+  app.use(authMiddleware);
 
-  // app.use(express.static(path.join(__dirname, "/build/static/css")));
-  // app.use(express.static(path.join(__dirname, "/build/static/js")));
-  app.use(express.static(path.join(__dirname, "..", "build")));
-  app.use(express.static(path.join(__dirname, "..", "build/static/*")));
-  app.use(express.static("public"));
-  // TODO: issue here maybe... don't see reference to it in any docs
-  // app.use(express.static(path.join("public")));
-
-  // if (process.env.TEST_SERVER === "true") {
   const privateKey = fs.readFileSync(
     `/etc/letsencrypt/live/bang-k8s.com/privkey.pem`,
     "utf8"
@@ -96,16 +89,6 @@ try {
     cert: certificate,
     ca: ca,
   };
-
-  // app.get("*", (req, res) => {
-  //   console.log("dirname", __dirname);
-  //   // console.log("dirname", __dirname + "/build/index.html");
-  //   console.log("dirname", path.join(__dirname, "..", "build", "index.html"));
-  //   // res.sendFile(path.join(__dirname + "/build/index.html"));
-  //   res.sendFile(path.join(__dirname, "..", "build", "index.html"));
-  // });
-
-  app.use(authMiddleware);
 
   const context = async ({ req, res, connection, redis }: ServerContext) => {
     if (connection) {
@@ -153,39 +136,28 @@ try {
   server.installSubscriptionHandlers(httpServer);
   server.installSubscriptionHandlers(httpsServer);
 
-  console.log("PORT", process.env.PORT);
-  console.log("URL", URL);
   try {
     // const port = process.env.PORT;
     // const port = 80;
-    const port = process.env.PORT;
-    httpServer.listen(port, () => {
+    httpServer.listen(process.env.PORT_HTTP, () => {
       console.log(
         // `Subscription ready at ws://localhost:${process.env.PORT}${server.subscriptionsPath}`
-        `Subscription ready at ws://${URL}:${process.env.PORT}${server.subscriptionsPath}`
+        `Subscription ready at ws://${URL}:${process.env.PORT_HTTP}${server.subscriptionsPath}`
       );
       console.log(
         // `Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`
         `Server ready at http://${URL}:${process.env.PORT}${server.graphqlPath}`
       );
     });
-    httpsServer.listen(443, () => {
+    httpsServer.listen(process.env.PORT_HTTPS, () => {
       console.log(
         // `Subscription ready at ws://localhost:${process.env.PORT}${server.subscriptionsPath}`
-        `HTTPS Subscription ready at ws://${URL}:443${server.subscriptionsPath}`
+        `HTTPS Subscription ready at ws://${URL}:${process.env.PORT_HTTPS}${server.subscriptionsPath}`
       );
       console.log(
         // `Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`
-        `HTTPS Server ready at http://${URL}:443${server.graphqlPath}`
+        `HTTPS Server ready at http://${URL}:${process.env.PORT_HTTPS}${server.graphqlPath}`
       );
-    });
-
-    app.get("*", (req, res) => {
-      console.log("dirname", __dirname);
-      // console.log("dirname", __dirname + "/build/index.html");
-      console.log("dirname", path.join(__dirname, "..", "build", "index.html"));
-      // res.sendFile(path.join(__dirname + "/build/index.html"));
-      res.sendFile(path.join(__dirname, "..", "build", "index.html"));
     });
   } catch (err) {
     console.log("Hold up main is busted");
