@@ -14,6 +14,7 @@ export const __prod_cors__ =
         origin: [
           // "https://client-cookies-test.vercel.app/",
           // "ws://client-cookies-test.vercel.app/",
+          "https://client-gamma-tawny.vercel.app",
           "https://bang-k8s.com/auth/login",
           "https://bang-k8s.com/*",
           "https://bang-k8s.com/auth/*",
