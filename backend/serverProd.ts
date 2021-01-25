@@ -49,6 +49,14 @@ try {
 
   const app = express();
   // app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
+  app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+  });
 
   const privateKey = fs.readFileSync(
     `/etc/letsencrypt/live/bang-k8s.com/privkey.pem`,
