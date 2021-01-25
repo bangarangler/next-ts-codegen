@@ -81,6 +81,10 @@ try {
   app.use("/auth", authRoutes);
   app.use(authMiddleware);
 
+  app.get("/", (req, res) => {
+    res.send("Node Backend");
+  });
+
   const context = async ({ req, res, connection, redis }: ServerContext) => {
     if (connection) {
       connection.pubsub = pubsub;
