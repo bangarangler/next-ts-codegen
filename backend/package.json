@@ -50,6 +50,7 @@
   "scripts": {
     "build": "tsc",
     "start:orig": "tsc && node dist/server.js",
+    "start:prod": "tsc && node dist/serverProd.js",
     "start": "tsc && node dist/server.js",
     "dev": "nodemon server.ts",
     "gen": "graphql-codegen --config codegen.yml",
