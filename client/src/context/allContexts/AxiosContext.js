@@ -17,7 +17,7 @@ export function AxiosProvider(props) {
       const accessToken = localStorage?.getItem("accessToken");
       // console.log("accessToken from useEffect", accessToken);
       if (!accessToken) {
-        router.push("/");
+        // router.push("/");
         return;
       }
       const data = decode(accessToken, process.env.NEXT_PUBLIC_JWT_SECRET_KEY);
