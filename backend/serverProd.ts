@@ -101,7 +101,10 @@ try {
 
   // const corsConfig = __prod_cors__;
 
-  let whitelist = ["https://client-cookies-test.vercel.app"];
+  let whitelist = [
+    "https://client-cookies-test.vercel.app",
+    "https://bang-k8s.com/auth/login",
+  ];
   var corsOptions = {
     origin: function (origin: any, callback: any) {
       console.log("origin", origin);
