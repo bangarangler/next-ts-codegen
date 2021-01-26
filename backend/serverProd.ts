@@ -157,7 +157,7 @@ try {
     httpsServer.listen(process.env.PORT_HTTPS, () => {
       console.log(
         // `Subscription ready at ws://localhost:${process.env.PORT}${server.subscriptionsPath}`
-        `HTTPS Subscription ready at ws://${URL}:${process.env.PORT_HTTPS}${server.subscriptionsPath}`
+        `HTTPS Subscription ready at wss://${URL}:${process.env.PORT_HTTPS}${server.subscriptionsPath}`
       );
       console.log(
         // `Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`
