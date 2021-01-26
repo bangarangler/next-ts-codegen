@@ -44,8 +44,6 @@ try {
     subscriber: new Redis(redisOptions as any),
   });
   const app = express();
-  // Note: Order of app.use matters here. We want our React app to be displayed on page load, so the build folder should be loaded first as it will also contain index.html. If we add public folder first then index.html from server/public folder will be loaded as Express.js reads the file from top to bottom and it stops rendering when it finds the first matching file.
-  // app.use(express.static(path.join(__dirname, "..", "build")));
   app.use(express.static(path.join(__dirname, "build")));
   app.use(express.static("public"));
 
@@ -59,17 +57,8 @@ try {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
-  // REST ROUTES LOOK HERE FOR LOGIN, REGISTER, LOGOUT
-  // app.get("/", (req, res) => {
-  //   res.send("NODE GRAPHQL API HERE WE GO...");
-  // });
-
   app.use("/auth", authRoutes);
-  // This line is for react-router basically... so that any dynamic route will
-  // not match and end up here so react routing will pick up and route them
-  // correctly
   app.get("/*", (req, res) => {
-    console.log("dir to serve", path.join(__dirname, "build", "index.html"));
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
   app.use(authMiddleware);
@@ -142,25 +131,19 @@ try {
   server.installSubscriptionHandlers(httpsServer);
 
   try {
-    // const port = process.env.PORT;
-    // const port = 80;
     httpServer.listen(process.env.PORT_HTTP, () => {
       console.log(
-        // `Subscription ready at ws://localhost:${process.env.PORT}${server.subscriptionsPath}`
         `Subscription ready at ws://${URL}:${process.env.PORT_HTTP}${server.subscriptionsPath}`
       );
       console.log(
-        // `Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`
         `Server ready at http://${URL}:${process.env.PORT_HTTP}${server.graphqlPath}`
       );
     });
     httpsServer.listen(process.env.PORT_HTTPS, () => {
       console.log(
-        // `Subscription ready at ws://localhost:${process.env.PORT}${server.subscriptionsPath}`
         `HTTPS Subscription ready at wss://${URL}:${process.env.PORT_HTTPS}${server.subscriptionsPath}`
       );
       console.log(
-        // `Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`
         `HTTPS Server ready at http://${URL}:${process.env.PORT_HTTPS}${server.graphqlPath}`
       );
     });
