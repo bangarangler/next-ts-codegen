@@ -14,7 +14,8 @@ export const __prod_cors__ =
       {
         origin: [
           "https://bang-k8s.com",
-          "ws://bang-k8s.com",
+          // "ws://bang-k8s.com",
+          "wss://bang-k8s.com",
           "https://bang-k8s.com",
           // "ws://backend-service.next-app:4000",
           // "https://backend-service.next-app:4000",

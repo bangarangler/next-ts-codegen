@@ -25,7 +25,8 @@ export const GQL_SUBSCRIPTION_ENDPOINT =
     ? // ? "ws://nodereacttesting.nowigence.ai/graphql"
       // "ws://backend-service.next-app:4000/graphql"
       // `ws://${process.env.REACT_APP_API_ADDRESS}/graphql`
-      `ws://bang-k8s.com/graphql`
+      // `ws://bang-k8s.com/graphql`
+      `wss://bang-k8s.com/graphql`
     : // `ws://${Config.api_url}/graphql`
       // "https://10.245.111.240"
       // "ws://bang-k8s.com/graphql"
