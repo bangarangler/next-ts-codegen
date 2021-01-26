@@ -2,6 +2,9 @@
 node_modules
 config-next
 DO-config-next
+bang-k8s-cluster
+k8s/todo-sub-backend-secrets.yml
+
 
 # BACKEND
 backend/node_modules
