@@ -49,6 +49,8 @@
     "typescript": "^4.1.3"
   },
   "scripts": {
+    "build:cra": "rm -rf ./dist && tsc && cp -R ./graphql/types ./dist/graphql/types && cp -R ./build ./dist",
+    "start:cra": "tsc && NODE_ENV=production node dist/serverProd.js",
     "**NOPE**": "**COMMENT: the build script deletes the ./dist then runs tsc then cp .graphql files into dist**",
     "build:test": "rm -rf ./dist && tsc && cp -R ./graphql/types ./dist/graphql/types && cp -R ./build ./dist",
     "build": "tsc",

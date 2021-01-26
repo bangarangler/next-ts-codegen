@@ -28,11 +28,6 @@ import { authMiddleware } from "./middleware/auth.middleware";
 
 // old secret = secret! or Secret!
 
-// interface JWTData {
-//   id: string;
-//   email: string;
-// }
-
 try {
   const redisOptions = {
     host: process.env.REDIS_HOST || "127.0.0.1",
@@ -49,12 +44,15 @@ try {
     subscriber: new Redis(redisOptions as any),
   });
   const app = express();
-
-  // Don't redirect if the hostname is `localhost:port` or the route is `/insecure`
-  // TODO: possible remove this after behind SSL LB may not need it all
+  // Note: Order of app.use matters here. We want our React app to be displayed on page load, so the build folder should be loaded first as it will also contain index.html. If we add public folder first then index.html from server/public folder will be loaded as Express.js reads the file from top to bottom and it stops rendering when it finds the first matching file.
+  // app.use(express.static(path.join(__dirname, "..", "build")));
+  app.use(express.static(path.join(__dirname, "build")));
+  app.use(express.static("public"));
 
   const corsConfig = __prod_cors__;
   app.use(cors(corsConfig));
+  // Don't redirect if the hostname is `localhost:port` or the route is `/insecure`
+  // TODO: possible remove this after behind SSL LB may not need it all
   app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
 
   app.use(cookieParser());
@@ -62,12 +60,19 @@ try {
   app.use(bodyParser.json());
 
   // REST ROUTES LOOK HERE FOR LOGIN, REGISTER, LOGOUT
-  app.get("/", (req, res) => {
-    res.send("NODE GRAPHQL API HERE WE GO...");
-  });
+  // app.get("/", (req, res) => {
+  //   res.send("NODE GRAPHQL API HERE WE GO...");
+  // });
 
   app.use("/auth", authRoutes);
   app.use(authMiddleware);
+
+  // This line is for react-router basically... so that any dynamic route will
+  // not match and end up here so react routing will pick up and route them
+  // correctly
+  app.get("/*", (req, res) => {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
+  });
 
   const privateKey = fs.readFileSync(
     `/etc/letsencrypt/live/bang-k8s.com/privkey.pem`,
