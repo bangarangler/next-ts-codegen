@@ -71,6 +71,7 @@ try {
   // not match and end up here so react routing will pick up and route them
   // correctly
   app.get("/*", (req, res) => {
+    console.log("dir to serve", path.join(__dirname, "build", "index.html"));
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 
