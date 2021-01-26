@@ -1,4 +1,4 @@
-import { Config } from "./config";
+// import { Config } from "./config";
 // export const GQL_ENDPOINT =
 //   process.env.NODE_ENV === "production"
 //     ? "https://nodereacttesting.nowigence.ai/graphql"
