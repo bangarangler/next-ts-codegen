@@ -127,6 +127,7 @@ try {
   app.use(authMiddleware);
 
   const context = async ({ req, res, connection, redis }: ServerContext) => {
+    console.log("req", req);
     if (connection) {
       connection.pubsub = pubsub;
       return { connection };
