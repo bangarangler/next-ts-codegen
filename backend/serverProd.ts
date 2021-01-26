@@ -65,8 +65,6 @@ try {
   // });
 
   app.use("/auth", authRoutes);
-  app.use(authMiddleware);
-
   // This line is for react-router basically... so that any dynamic route will
   // not match and end up here so react routing will pick up and route them
   // correctly
@@ -74,6 +72,7 @@ try {
     console.log("dir to serve", path.join(__dirname, "build", "index.html"));
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
+  app.use(authMiddleware);
 
   const privateKey = fs.readFileSync(
     `/etc/letsencrypt/live/bang-k8s.com/privkey.pem`,
@@ -152,7 +151,7 @@ try {
       );
       console.log(
         // `Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`
-        `Server ready at http://${URL}:${process.env.PORT}${server.graphqlPath}`
+        `Server ready at http://${URL}:${process.env.PORT_HTTP}${server.graphqlPath}`
       );
     });
     httpsServer.listen(process.env.PORT_HTTPS, () => {
