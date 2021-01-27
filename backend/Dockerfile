@@ -4,7 +4,7 @@ WORKDIR /usr/src/backend
 
 COPY package*.json ./
 
-EXPOSE 4000
+EXPOSE 80
 
 # ENV NODE_ENV production
 

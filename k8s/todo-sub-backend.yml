@@ -30,9 +30,53 @@ spec:
       containers:
         - name: todo-sub-backend
           image: bangarangler/todo-sub-backend:latest
+          ports:
+            - containerPort: 80
+              protocol: TCP
           env:
             - name: MONGO_STRING
               valueFrom:
                 secretKeyRef:
                   name: todo-sub-backend-secret
                   key: MONGO_STRING
+            - name: REDIS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: todo-sub-backend-secret
+                  key: REDIS_SECRET
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: todo-sub-backend-secret
+                  key: JWT_SECRET_KEY
+            - name: REFRESH_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: todo-sub-backend-secret
+                  key: REFRESH_SECRET_KEY
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: todo-sub-backend-secret
+                  key: REDIS_HOST
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: todo-sub-backend-secret
+                  key: REDIS_PASSWORD
+            - name: PORT_HTTP
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-sub-configmap
+                  key: PORT_HTTP
+            - name: PORT_HTTPS
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-sub-configmap
+                  key: PORT_HTTPS
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-sub-configmap
+                  key: REDIS_PORT
+      restartPolicy: Always
